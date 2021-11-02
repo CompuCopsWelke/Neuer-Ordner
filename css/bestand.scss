@@ -1,0 +1,83 @@
+#bestand table {
+	margin-left: 4px;
+	margin-bottom: 4px;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+#bestand td {
+	padding-left: 1px;
+	padding-right: 1px;
+	border-right-width: 1px;
+	border-right-style: solid;
+}
+#bestand th {
+	padding-left: 1px;
+	padding-right: 1px;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+#bestand tr:nth-child(even) {
+    background-color: Lightgreen;
+}
+#bestand th {
+    background-color: white;
+}
+
+#bestand tr:hover {
+    background-color: #ffff99;
+}
+
+#bestand td:nth-child(6),
+td:nth-child(8),
+td:nth-child(9),
+td:nth-child(10),
+td:nth-child(11)
+{
+    text-align: right;
+}
+
+
+#bestand 
+  td:nth-child(7),
+  td:nth-child(13),
+{
+    max-width: 150px;
+}
+
+#bestand a {
+    color: blue;
+}
+#bestand a:hover {
+    background-color: #ffff99;
+}
+
+#bestand H2 {
+    font-size: 14px;
+    margin-top: 6px;
+    margin-bottom: 1px;
+}
+
+#bestand input:not([type="range"]), 
+  button,
+  select
+{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    min-height: 20px;
+}
+
+#st_editor input:not([type="range"]) {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    min-height: 20px;
+}
+
+#st_editor a {
+    color: blue;
+}
