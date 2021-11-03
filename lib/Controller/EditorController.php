@@ -1,8 +1,8 @@
 <?php
 
-namespace OCA\Stundenzettel\Controller;
+namespace OCA\Bestand\Controller;
 
-use OCA\Stundenzettel\AppInfo\Application;
+use OCA\Bestand\AppInfo\Application;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\RedirectResponse;
@@ -60,7 +60,7 @@ class EditorController extends Controller
         }
 
         $urlGenerator = \OC::$server->getURLGenerator();
-        $absoluteUrl = $urlGenerator->linkToRoute('stundenzettel.page.index', $params);
+        $absoluteUrl = $urlGenerator->linkToRoute('bestand.page.index', $params);
         return new RedirectResponse($absoluteUrl);
     }
 
@@ -70,7 +70,7 @@ class EditorController extends Controller
      */
     private function getDbh(): \PDO
     {
-        include('stundenzettel/lib/config.php');
+        include('bestand/lib/config.php');
 
         $conn = $db_config['system'] . ':host=' . $db_config['host'] . ';dbname=' . $db_config['dbname'] . ';port=' . $db_config['port'];
         $dbh = new \PDO($conn, $db_config['user'], $db_config['password']);
@@ -202,11 +202,11 @@ class EditorController extends Controller
 
             $params['week'] = $datum;
             $params['mitarbeiter'] = $uid;
-            return new RedirectResponse($urlGenerator->linkToRoute('stundenzettel.editor.create', $params));
+            return new RedirectResponse($urlGenerator->linkToRoute('bestand.editor.create', $params));
         }
 
         if (0 >= strlen($submit_next)) { # back to Wochenuebersicht
-            $absoluteUrl = $urlGenerator->linkToRoute('stundenzettel.page.index', $params);
+            $absoluteUrl = $urlGenerator->linkToRoute('bestand.page.index', $params);
         } else {
             $absoluteUrl = $this->getUrlForNextEntry($dbh, $id, $urlGenerator, $uid, $datum);
         }
@@ -228,13 +228,13 @@ class EditorController extends Controller
             $next_id = $this->getNextId($dbh, $prev_id);
             if (false !== $next_id) {
                 $params['id'] = $next_id;
-                return $urlGenerator->linkToRoute('stundenzettel.editor.edit', $params);
+                return $urlGenerator->linkToRoute('bestand.editor.edit', $params);
             }
         }
 
         $params['week'] = $datum;
         $params['mitarbeiter'] = $uid;
-        return $urlGenerator->linkToRoute('stundenzettel.editor.create', $params);
+        return $urlGenerator->linkToRoute('bestand.editor.create', $params);
     }
 
     /**
@@ -274,7 +274,7 @@ class EditorController extends Controller
      **/
     public function edit($id): TemplateResponse
     {
-        Util::addStyle(Application::APP_ID, 'stundenzettel');
+        Util::addStyle(Application::APP_ID, 'bestand');
 
         $params['id'] = $id;
         return new TemplateResponse(Application::APP_ID, 'editor', $params);
@@ -307,7 +307,7 @@ class EditorController extends Controller
                            $von
     ): TemplateResponse
     {
-        Util::addStyle(Application::APP_ID, 'stundenzettel');
+        Util::addStyle(Application::APP_ID, 'bestand');
 
         if ('last' == $copy ) {
             $params = $this->copyLast($week, $mitarbeiter);
