@@ -7,12 +7,41 @@ class Bestandliste
     private $dbh;
     private $urlGenerator;
 
+    private $message;
+
     private $kategorie;
     private $suchfeld;
     private $suchtext;
     private $datumfeld;
     private $von;
     private $bis;
+
+    private const SuchFeldList = [
+        ['inventar_nr', 'Inventar-Nr'], 
+        ['serien_nr', 'Serien-Nr'],
+        ['weitere_nr', 'weitere nr'],
+        ['geheim_nr', 'geheim_nr'],
+        ['bezeichnung', 'Bezeichnung'],
+        ['typenbezeichnung', 'Typenbezeichnung'],
+        ['lieferant', 'Lieferant'],
+        ['standort', 'Standort'],
+        ['nutzer', 'Nutzer'],
+        ['st_beleg_nr', 'ST-Beleg-Nr'],
+        ['zubehoer', 'Zubehör'],
+        ['st_inventar_nr', 'ST-Inventar-Nr'],
+        ['stb_inventar_nr', 'STB-Inventar-Nr'],
+        ['konto', 'Konto'],
+        ['bemerkung', 'Bemerkung'],
+        ['fluke_nr', 'Fluke-Nr']
+    ];
+
+    private const DatumFeldList = [
+        ['anschaffungsdatum', 'Anschaffungsdatum'],
+        ['ausgabedatum', 'Ausgabedatum'],
+        ['ruecknahmedatum', 'Rücknahmedatum'],
+        ['prueftermin1', 'Prüftermin1'],
+        ['prueftermin2', 'Prüftermin2']
+    ];
 
 
     /**
@@ -80,8 +109,13 @@ class Bestandliste
         $stmt->execute();
 
         while ($content = $stmt->fetch()) {
-            $s = htmlspecialchars($content['name']);
-            echo('<option value="'.$content['id'].'">' . s . '</option>');
+            $id = $content['id'];
+            $s = '<option value="'.$id.'"';
+            if ($this->kategorie == $id) $s .= ' selected';
+
+            $n = htmlspecialchars($content['name']);
+
+            echo($s .'>' . $n . '</option>');
         }
         $stmt->closeCursor();
         echo('</select>');
@@ -90,29 +124,13 @@ class Bestandliste
     public function selectSuchfeld()
     {
         echo('<select name="suchfeld">');
-        $feldList = [
-            ['inventar_nr', 'Inventar-Nr'], 
-            ['serien_nr', 'serien_nr'],
-            ['weitere_nr', 'weitere_nr'],
-            ['geheim_nr', 'geheim_nr'],
-            ['bezeichnung', 'bezeichnung'],
-            ['typenbezeichnung', 'Typenbezeichnung'],
-            ['lieferant', 'lieferant'],
-            ['standort', 'standort'],
-            ['nutzer', 'nutzer'],
-            ['st_beleg_nr', 'st_beleg_nr'],
-            ['zubehoer', 'zubehoer'],
-            ['st_inventar_nr', 'st_inventar_nr'],
-            ['stb_inventar_nr', 'STB-Inventar-Nr'],
-            ['konto', 'Konto'],
-            ['bemerkung', 'Bemerkung'],
-            ['fluke_nr', 'Fluke-Nr']
-        ];
 
-        # TODO last selected anzeigen
         echo('<option value="">&lt;Standard&gt;</option>');
-        foreach ($feldList as $f) {
-            echo('<option value="' . $f[0] . '">' . $f[1] . '</option>');
+        foreach (Bestandliste::SuchFeldList as $f) {
+            $s = '<option value="' . $f[0] . '"';
+            if ($this->suchfeld == $f[0]) $s .= ' selected';
+
+            echo($s. '>' . $f[1] . "</option>\n");
         }
         echo('</select>');
     }
@@ -120,22 +138,28 @@ class Bestandliste
 
     public function selectDatumfeld()
     {
-        echo('<select name="datum">');
-        $feldList = [
-            ['anschaffungsdatum', 'Anschaffungsdatum'],
-            ['ausgabedatum', 'Ausgabedatum'],
-            ['ruecknahmedatum', 'Rücknahmedatum'],
-            ['prueftermin1', 'Prüftermin1'],
-            ['prueftermin2', 'Prüftermin2']
-        ];
+        echo('<select name="datumfeld">');
 
-        # TODO last selected anzeigen
         echo('<option value="">&lt;bitte auswählen&gt;</option>');
-        foreach ($feldList as $f) {
-            echo('<option value="' . $f[0] . '">' . $f[1] . '</option>');
+        foreach (Bestandliste::DatumFeldList as $f) {
+            $s = '<option value="' . $f[0] . '"';
+            if ($this->datumfeld == $f[0]) $s .= ' selected';
+
+            echo($s. '>' . $f[1] . "</option>\n");
         }
         echo('</select>');
     }
+
+    public function echoVon()
+    {
+        echo($this->von);
+    }
+
+    public function echoBis()
+    {
+        echo($this->bis);
+    }
+
     
     public function showBestand()
     {
@@ -164,12 +188,20 @@ class Bestandliste
             b.fluke_nr
         FROM oc_bdb_bestand b 
             inner join oc_bdb_kategorie k on (b.kategorie=k.id)
-        ORDER BY 1;";
+        WHERE true";
+        
+        if (0 < strlen($this->kategorie)) $sql .= ' and (b.kategorie = :kategorie)';
+        $sql .= $this->addSuchFeld();
+        $sql .= $this->addDatumFeld();
 
+        $sql .= ' ORDER BY 1;';
 
         $stmt = $this->dbh->prepare($sql);
-        /** @var PDOStatement $stmt */
-        # TODO $stmt->bindParam(':uid', $this->uid);
+        if (0 < strlen($this->kategorie)) $stmt->bindParam(':kategorie', $this->kategorie);
+        if (0 < strlen($this->suchtext)) $stmt->bindParam(':suchtext', $this->suchtext);
+        if (0 < strlen($this->von)) $stmt->bindParam(':von', $this->von);
+        if (0 < strlen($this->bis)) $stmt->bindParam(':bis', $this->bis);
+
         # $stmt->bindValue(':wochenbeginn', date_format($this->wochenbeginn, 'Y-m-d'));
         $stmt->execute();
         while ($zeile = $stmt->fetch()) {
@@ -177,6 +209,44 @@ class Bestandliste
         }
 
         $stmt->closeCursor();
+    }
+
+    private function addSuchFeld()
+    {
+        
+        if (0 >= strlen($this->suchtext))
+            return '';
+
+        foreach (Bestandliste::SuchFeldList as $f)
+            if ($this->suchfeld == $f[0]) 
+                return " and ".$f[0] . ' = :suchtext ';
+
+        return '';
+    }
+
+    private function addDatumFeld()
+    {
+        $suchfeld = '';
+        foreach (Bestandliste::DatumFeldList as $f)
+            if ($this->datumfeld == $f[0]) {
+                $suchfeld = $f[0];
+                break;
+            }
+
+        if (0 >= strlen($suchfeld))
+            return '';
+
+
+        if (0 < strlen($this->von)) {
+            if (0 < strlen($this->bis)) {
+                return 'and (('.$suchfeld.'>= :von) and ('.$suchfeld.'<=:bis))';
+            } else
+                return 'and ('.$suchfeld.'>= :von)';
+        } else
+            if (0 < strlen($this->bis)) 
+                return 'and ('.$suchfeld.'<=:bis)';
+            else
+                return '';
     }
 
     private function echoZeile($zeile)

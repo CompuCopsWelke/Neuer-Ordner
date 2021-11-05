@@ -29,14 +29,14 @@ class EditorController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function delete($id, $wochenbeginn, $mitarbeiter): RedirectResponse
+    public function delete($id): RedirectResponse
     {
         $user = \OC::$server->getUserSession()->getUser();
         if (null === $user) {
             $params = [];
             $params['error_msg'] = 'unbekannter Kollege';
         } else {
-            $sql = 'Select * from deleteZeitErfEntry(:id, :logged_in_user);';
+            $sql = 'Delete from deleteBestand(:id, :logged_in_user);';
             $stmt = $this->getDbh()->prepare($sql);
             $params = False;
             $sql_params = [
@@ -49,8 +49,6 @@ class EditorController extends Controller
             } catch (\Exception $e) {
                 $params = [];
                 $params['message'] = $e->getMessage();
-                $params['week'] = $wochenbeginn;
-                $params['mitarbeiter'] = $mitarbeiter;
             }
             $stmt->closeCursor();
             if (False === $params) {
@@ -80,23 +78,6 @@ class EditorController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param int $lohnart
-     * @param bool $arbeitszeitverlagerung
-     * @param String $auftragsnr
-     * @param String $bauvorhaben
-     * @param String $bis
-     * @param String $datum
-     * @param String $erschwer_nr
-     * @param float $erschwer_stunden
-     * @param String $erschwer_taetigkeit
-     * @param bool $feiertag
-     * @param bool $rufbereitschaft
-     * @param float $stunden
-     * @param bool $ueberstunden
-     * @param float $verpflegungsmehraufwand
-     * @param String $von
-     * @param String $uid
      *
      * @return RedirectResponse
      *
@@ -104,31 +85,35 @@ class EditorController extends Controller
      * @NoCSRFRequired
      *
      */
-    public function update($id,
-                           $lohnart,
-                           $arbeitszeitverlagerung,
-                           $auftragsnr,
-                           $bauvorhaben,
-                           $bis,
-                           $datum,
-                           $erschwer_nr,
-                           $erschwer_stunden,
-                           $erschwer_taetigkeit,
-                           $feiertag,
-                           $rufbereitschaft,
-                           $stunden,
-                           $ueberstunden,
-                           $verpflegungsmehraufwand,
-                           $von,
-                           $uid,
-                           $submit_next
-                       ): \OCP\AppFramework\Http\Response
+    public function update(
+        $id,
+        $kategorie,
+        $inventar_nr,
+        $serien_nr,
+        $weitere_nr,
+        $geheim_nr,
+        $bezeichnung,
+        $typenbezeichnung,
+        $lieferant,
+        $standort,
+        $nutzer,
+        $st_beleg_nr,
+        $zubehoer,
+        $st_inventar_nr,
+        $stb_inventar_nr,
+        $konto,
+        $bemerkung,
+        $fluke_nr,
+        $anschaffungswert,
+        $anschaffungsdatum,
+        $prueftermin1,
+        $prueftermin2,
+        $ausgabedatum,
+        $ruecknahmedatum
+    ): \OCP\AppFramework\Http\Response
     {
 
-        $b_feiertag = ($feiertag == 'feiertag') ? 1 : 0;
-        $b_arbeitszeitverlagerung = ($arbeitszeitverlagerung == 'arbeitszeitverlagerung') ? 1 : 0;
-        $b_ueberstunden = ($ueberstunden == 'ueberstunden' ? 1 : 0);
-        $b_rufbereitschaft = ($rufbereitschaft == 'rufbereitschaft' ? 1 : 0);
+        // TODO checkKategorie
 
         $dbh = $this->getDbh();
         $params = False;
@@ -137,39 +122,61 @@ class EditorController extends Controller
         if (null === $user) $error_msg = 'unbekannter Kollege';
 
         if (0 === strlen($error_msg)) {
-            $sql = 'Select * from updateZeitErfEntry(:id, :lohnart,
-                :arbeitszeitverlagerung, :auftragsnr, :bauvorhaben, :bis, :datum,
-                :erschwer_nr, :erschwer_stunden, :erschwer_taetigkeit, :feiertag,
-                :rufbereitschaft, :stunden, :ueberstunden,
-                :verpflegungsmehraufwand, :von, :mitarbeiter, :logged_in_user);';
+            $sql = 'Update oc_bdb_bestand set
+                    kategorie = :kategorie,
+                    inventar_nr = :inventar_nr,
+                    serien_nr = :serien_nr,
+                    weitere_nr = :weitere_nr,
+                    geheim_nr = :geheim_nr,
+                    bezeichnung = :bezeichnung,
+                    typenbezeichnung = :typenbezeichnung,
+                    lieferant = :lieferant,
+                    standort = :standort,
+                    nutzer = :nutzer,
+                    st_beleg_nr = :st_beleg_nr,
+                    zubehoer = :zubehoer,
+                    st_inventar_nr = :st_inventar_nr,
+                    stb_inventar_nr = :stb_inventar_nr,
+                    konto = :konto,
+                    bemerkung = :bemerkung,
+                    fluke_nr = :fluke_nr,
+                    anschaffungswert = :anschaffungswert,
+                    anschaffungsdatum = :anschaffungsdatum,
+                    prueftermin1 = :prueftermin1,
+                    prueftermin2 = :prueftermin2,
+                    ausgabedatum = :ausgabedatum,
+                    ruecknahmedatum = :ruecknahmedatum
+                where id = :id;';
 
             $id = is_numeric($id) ? intval($id) : 0;
-            $lohnart = is_numeric($lohnart) ? intval($lohnart) : 100;
-            $stunden = is_numeric($stunden) ? floatval($stunden) : 0.0;
-            $erschwer_stunden = is_numeric($erschwer_stunden) ? floatval($erschwer_stunden) : null;
-            $verpflegungsmehraufwand = is_numeric($verpflegungsmehraufwand) ? floatval($verpflegungsmehraufwand) : null;
+            $anschaffungswert = is_numeric($anschaffungswert) ? intval($anschaffungswert) : 0;
 
-            $sql_bis = '00:00' == $bis ? '24:00' : $bis;
 
             $stmt = $dbh->prepare($sql);
             $sql_params = [':id' => $id,
-                ':lohnart' => $lohnart,
-                ':arbeitszeitverlagerung' => $b_arbeitszeitverlagerung,
-                ':auftragsnr' => $auftragsnr,
-                ':bauvorhaben' => $bauvorhaben,
-                ':bis' => $sql_bis,
-                ':datum' => $datum,
-                ':erschwer_nr' => $erschwer_nr,
-                ':erschwer_stunden' => $erschwer_stunden,
-                ':erschwer_taetigkeit' => $erschwer_taetigkeit,
-                ':feiertag' => $b_feiertag,
-                ':rufbereitschaft' => $b_rufbereitschaft,
-                ':stunden' => $stunden,
-                ':ueberstunden' => $b_ueberstunden,
-                ':verpflegungsmehraufwand' => $verpflegungsmehraufwand,
-                ':von' => $von,
-                ':mitarbeiter' => $uid,
-                ':logged_in_user' => $user->getUID()
+                ':kategorie' => $kategorie,
+                ':inventar_nr' => $inventar_nr,
+                ':serien_nr' => $serien_nr,
+                ':weitere_nr' => $weitere_nr,
+                ':geheim_nr' => $geheim_nr,
+                ':bezeichnung' => $bezeichnung,
+                ':typenbezeichnung' => $typenbezeichnung,
+                ':lieferant' => $lieferant,
+                ':standort' => $standort,
+                ':nutzer' => $nutzer,
+                ':st_beleg_nr' => $st_beleg_nr,
+                ':zubehoer' => $zubehoer,
+                ':st_inventar_nr' => $st_inventar_nr,
+                ':stb_inventar_nr' => $stb_inventar_nr,
+                ':konto' => $konto,
+                ':bemerkung' => $bemerkung,
+                ':fluke_nr' => $fluke_nr,
+                ':anschaffungswert' => $anschaffungswert,
+                ':anschaffungsdatum' => $anschaffungsdatum,
+                ':prueftermin1' => $prueftermin1,
+                ':prueftermin2' => $prueftermin2,
+                ':ausgabedatum' => $ausgabedatum,
+                ':ruecknahmedatum' => $ruecknahmedatum
                 ];
             try {
                 $stmt->execute($sql_params);
@@ -183,25 +190,32 @@ class EditorController extends Controller
         $urlGenerator = \OC::$server->getURLGenerator();
         if (False === $params) {
             $params = [];
-            $params['feiertag'] = $b_feiertag;
-            $params['arbeitszeitverlagerung'] = $b_arbeitszeitverlagerung;
-            $params['datum'] = $datum;
-            $params['von'] = $von;
-            $params['bis'] = $bis;
-            $params['auftragsnr'] = $auftragsnr;
-            $params['bauvorhaben'] = $bauvorhaben;
-            $params['lohnart'] = $lohnart;
-            $params['erschwer_nr'] = $erschwer_nr;
-            $params['erschwer_stunden'] = $erschwer_stunden;
-            $params['erschwer_taetigkeit'] = $erschwer_taetigkeit;
-            $params['stunden'] = $stunden;
-            $params['ueberstunden'] = $b_ueberstunden;
-            $params['rufbereitschaft'] = $b_rufbereitschaft;
-            $params['verpflegungsmehraufwand'] = $verpflegungsmehraufwand;
+            $params['kategorie'] = $kategorie;
+            $params['inventar_nr'] = $inventar_nr;
+            $params['serien_nr'] = $serien_nr;
+            $params['weitere_nr'] = $weitere_nr;
+            $params['geheim_nr'] = $geheim_nr;
+            $params['bezeichnung'] = $bezeichnung;
+            $params['typenbezeichnung'] = $typenbezeichnung;
+            $params['lieferant'] = $lieferant;
+            $params['standort'] = $standort;
+            $params['nutzer'] = $nutzer;
+            $params['st_beleg_nr'] = $st_beleg_nr;
+            $params['zubehoer'] = $zubehoer;
+            $params['st_inventar_nr'] = $st_inventar_nr;
+            $params['stb_inventar_nr'] = $stb_inventar_nr;
+            $params['konto'] = $konto;
+            $params['bemerkung'] = $bemerkung;
+            $params['fluke_nr'] = $fluke_nr;
+            $params['anschaffungswert'] = $anschaffungswert;
+            $params['anschaffungsdatum'] = $anschaffungsdatum;
+            $params['prueftermin1'] = $prueftermin1;
+            $params['prueftermin2'] = $prueftermin2;
+            $params['ausgabedatum'] = $ausgabedatum;
+            $params['ruecknahmedatum'] = $ruecknahmedatum;
+
             $params['error_msg'] = $error_msg;
 
-            $params['week'] = $datum;
-            $params['mitarbeiter'] = $uid;
             return new RedirectResponse($urlGenerator->linkToRoute('bestand.editor.create', $params));
         }
 
@@ -211,57 +225,6 @@ class EditorController extends Controller
             $absoluteUrl = $this->getUrlForNextEntry($dbh, $id, $urlGenerator, $uid, $datum);
         }
         return new RedirectResponse($absoluteUrl);
-    }
-
-    /**
-     * getUrlForNextEntry ermittelt die Folge-URL beim Klick auf "Speichern und Nächster".
-     *
-     * @param \PDO $dbh
-     * @param integer $prev_id ,
-     * @param  $uid
-     * @param  $datum
-     * @return String die ermittelte URL
-     */
-    private function getUrlForNextEntry($dbh, $prev_id, $urlGenerator, $uid, $datum) {
-        $params = [];
-        if (0 < $prev_id) {
-            $next_id = $this->getNextId($dbh, $prev_id);
-            if (false !== $next_id) {
-                $params['id'] = $next_id;
-                return $urlGenerator->linkToRoute('bestand.editor.edit', $params);
-            }
-        }
-
-        $params['week'] = $datum;
-        $params['mitarbeiter'] = $uid;
-        return $urlGenerator->linkToRoute('bestand.editor.create', $params);
-    }
-
-    /**
-     * getNextId ermittelt zu einer gegebenen EintragsID den nächsten Id innerhalb der selben Woche
-     *
-     * @param \PDO $dbh
-     * @param integer $prev_id ,
-     * @return false|integer
-     */
-    private function getNextId($dbh, $prev_id) {
-        $params = false;
-        $sql = 'Select e.id from oc_zeiterf_entry e inner join 
-                (select oc_zeiterf_wochenblatt_id, datum, von, id from oc_zeiterf_entry Where id=:id) w
-                on (e.oc_zeiterf_wochenblatt_id = w.oc_zeiterf_wochenblatt_id)
-                where ((e.datum > w.datum) or (e.datum=w.datum and e.von >= w.von)) AND e.id <> w.id
-                Order by e.datum, e.von, e.id
-                Limit 1;';
-        $stmt = $dbh->prepare($sql);
-        $sql_params = [':id' => $prev_id];
-        try {
-            $stmt->execute($sql_params);
-            $params = $stmt->fetch();
-        } catch (\Exception $e) {
-            $error_msg = $e->getMessage();
-        }
-        $stmt->closeCursor();
-        return false === $params ? false : $params['id'];
     }
 
     /**
@@ -281,114 +244,16 @@ class EditorController extends Controller
     }
 
     /**
-     * @param string week
-     * @param string mitarbeiter
-     *
      * @return TemplateResponse
      *
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function create($week, $mitarbeiter, $copy, $error_msg,
-                           $lohnart,
-                           $arbeitszeitverlagerung,
-                           $auftragsnr,
-                           $bauvorhaben,
-                           $bis,
-                           $datum,
-                           $erschwer_nr,
-                           $erschwer_stunden,
-                           $erschwer_taetigkeit,
-                           $feiertag,
-                           $rufbereitschaft,
-                           $stunden,
-                           $ueberstunden,
-                           $verpflegungsmehraufwand,
-                           $von
-    ): TemplateResponse
+    public function create($error_msg): TemplateResponse
     {
         Util::addStyle(Application::APP_ID, 'bestand');
 
-        if ('last' == $copy ) {
-            $params = $this->copyLast($week, $mitarbeiter);
-            if (False === $params) {
-                # leere Editor praesentieren
-                $params = [];
-                $params['week'] = $week;
-                $params['mitarbeiter'] = $mitarbeiter;
-            }
-        } else {
-            $params['feiertag'] = $feiertag;
-            $params['arbeitszeitverlagerung'] = $arbeitszeitverlagerung;
-            0 < strlen($datum) && $params['datum'] = $datum;
-
-            if (8 == strlen($von)) 
-                $von = substr($von, 0, 5);
-
-            if (8 == strlen($bis)) 
-                $bis = substr($bis, 0, 5);
-            
-            if ('24:00' == $bis) 
-                $bis = '00:00';
-
-            $params['von'] = $von;
-            $params['bis'] = $bis;
-            $params['auftragsnr'] = $auftragsnr;
-            $params['bauvorhaben'] = $bauvorhaben;
-            $params['lohnart'] = $lohnart;
-            $params['erschwer_nr'] = $erschwer_nr;
-            $params['erschwer_stunden'] = $erschwer_stunden;
-            $params['erschwer_taetigkeit'] = $erschwer_taetigkeit;
-            $params['stunden'] = $stunden;
-            $params['ueberstunden'] = $ueberstunden;
-            $params['rufbereitschaft'] = $rufbereitschaft;
-            $params['verpflegungsmehraufwand'] = $verpflegungsmehraufwand;
-
-            $params['week'] = $week;
-            $params['mitarbeiter'] = $mitarbeiter;
-        }
         $params['error_msg'] = $error_msg;
         return new TemplateResponse(Application::APP_ID, 'editor', $params);
-    }
-
-
-    /**
-     * @param string week
-     * @param string mitarbeiter
-     *
-     * @return params für den neunen Editor
-     **/
-    private function copyLast($week, $mitarbeiter) 
-    {
-        $sql = "Select e.datum + integer '1' as datum, 
-                feiertag, arbeitszeitverlagerung,
-                to_char(e.von, 'HH24:MI') as von, to_char(e.bis, 'HH24:MI') as bis,
-                auftragsnr, bauvorhaben, lohnart, erschwer_nr, erschwer_stunden,
-                erschwer_taetigkeit, stunden, ueberstunden, rufbereitschaft,
-                verpflegungsmehraufwand
-                FROM oc_zeiterf_entry e 
-                    inner join oc_zeiterf_wochenblatt w on (e.oc_zeiterf_wochenblatt_id=w.id)
-                    inner join oc_zeiterf_user u on (w.oc_zeiterf_user_id=u.id)
-                WHERE u.uid=:uid and w.wochenbeginn=:wochenbeginn
-                Order by e.datum desc, e.von desc, e.id
-                Limit 1;";
-        $stmt = $this->getDbh()->prepare($sql);
-        $stmt->bindParam(':uid', $mitarbeiter);
-        $stmt->bindParam(':wochenbeginn', $week);
-        try {
-            $stmt->execute();
-            $params = $stmt->fetch();
-            if (False !== $params) {
-                if ('24:00' == $params['bis']) 
-                    $params['bis'] = '00:00';
-
-                # id entfernen
-                $params['id'] = ''; 
-            }
-        } catch (\Exception $e) {
-            $error_msg = $e->getMessage();
-        }
-        $stmt->closeCursor();
-        return $params;
     }
 }

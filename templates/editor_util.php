@@ -4,6 +4,8 @@ class Bestand
 {
     /** @var PDO $dbh */
     private $dbh;
+    private $urlGenerator;
+    private $uid;
 
     private $message = '';
     private $editable = False;
@@ -51,6 +53,8 @@ class Bestand
 
         $this->getDbh();
 
+        $this->urlGenerator = \OC::$server->getURLGenerator();
+
         if (0 < $this->id)
             if (!$this->load())
                 $this->id = 0;
@@ -61,8 +65,8 @@ class Bestand
         if (array_key_exists('message', $params)) 
             $this->message = $params['message'];
 
-        // $u_uid = 
-        $this->getPermissions($u_uid);
+        $this->uid = $user->getUID();
+        $this->getPermissions();
 
         if (array_key_exists('inventar_nr', $params)) $this->inventar_nr = $params['inventar_nr'];
         if (array_key_exists('serien_nr', $params)) $this->serien_nr = $params['serien_nr'];
@@ -150,9 +154,8 @@ class Bestand
         return $back;
     }
 
-    private function getPermissions($uid, $kategorie)
+    private function getPermissions() # TODO , $kategorie
     {
-
         $this->editable = false;
         $sql = 'SELECT id
             FROM oc_bdb_kategorie_perm
@@ -161,7 +164,7 @@ class Bestand
               # kategorie=:kategorie TODO
 
         $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':uid', $uid);
+        $stmt->bindParam(':uid', $this->uid);
         $stmt->execute();
         if ($content = $stmt->fetch())
             $this->editable = true;
@@ -180,21 +183,44 @@ class Bestand
     }
 
 
-    public function getBerichtId()
+    public function getBestandId()
     {
         return $this->id;
     }
 
-    public function echoBerichtId()
+    public function echoBestandId()
     {
         echo($this->id);
     }
 
     public function echoKategorie()
     {
+        echo('<td colspan="2">');
+        if ($this->editable) {
+            $this->selectKategorie();
+        } else {
+            echo($this->kategorie_name);
+        }
+        echo('</td>');
+    }
 
-        // TODO
-        return $this->kategorie;
+    public function selectKategorie()
+    {
+        echo('<select name="kategorie">');
+        $sql = 'SELECT k.id, k.name 
+            FROM oc_bdb_kategorie k inner join oc_bdb_kategorie_perm p on (k.id=p.kategorie)
+            WHERE p.uid=:uid 
+            ORDER BY 2;';
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':uid', $this->uid);
+        $stmt->execute();
+
+        while ($content = $stmt->fetch()) {
+            $s = htmlspecialchars($content['name']);
+            echo('<option value="'.$content['id'].'">' . $s . '</option>');
+        }
+        $stmt->closeCursor();
+        echo('</select>');
     }
 
     private function echoTextField($name, $value, $length) {
@@ -205,9 +231,8 @@ class Bestand
         } else {
             echo('<td colspan="2">');
             echo($value);
-            echo('"</td><td></td>');
+            echo('</td><td></td>');
         }
-
     }
 
     private function echoTextArea($name, $value, $length) {
@@ -218,7 +243,7 @@ class Bestand
         } else {
             echo('<td colspan="2">');
             echo($value);
-            echo('"</td><td>');
+            echo('</td><td>');
         }
     }
 
@@ -230,7 +255,7 @@ class Bestand
         } else {
             echo('<td colspan="2">');
             echo($value);
-            echo('"</td><td>');
+            echo('</td><td>');
         }
     }
 
@@ -269,6 +294,7 @@ class Bestand
         $this->echoTextField('lieferant', $this->lieferant, 100);
 
     }
+
     public function echoStandort()
     {
         $this->echoTextField('standort', $this->standort, 100);
@@ -304,7 +330,7 @@ class Bestand
         $this->echoTextField('konto', $this->konto, 50);
     }
 
-    public function echoFluke_nb()
+    public function echoFluke_nr()
     {
         $this->echoTextField('fluke_nr', $this->fluke_nr, 50);
     }
@@ -317,12 +343,13 @@ class Bestand
     public function echoAnschaffungswert()
     {
         if ($this->editable) {
-            echo('<input type="number" name="anschaffungswert" id="anschaffungswert" value="');
+            echo('<td><input type="number" name="anschaffungswert" id="anschaffungswert" value="');
             echo($this->anschaffungswert);
-            echo('" /> </td><td>');
+            echo('" /> </td>');
         } else {
+            echo('<td>');
             echo($this->anschaffungswert);
-            echo('</td><td>');
+            echo('</td>');
         }
     }
 
@@ -354,16 +381,14 @@ class Bestand
 
     public function echoDocTable()
     {
-        $urlGenerator = \OC::$server->getURLGenerator();
-
-        $sql = 'SELECT id, titel, dateiname FROM oc_bdb_doc WHERE bericht=:id;';
+        $sql = 'SELECT id, titel, dateiname FROM oc_bdb_doc WHERE bestand=:id;';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         if ($stmt->execute())
             while ($content = $stmt->fetch()) {
                 $params['doc_id'] = $content['id'];
-                $show_url = $urlGenerator->linkToRoute('bestand.bestand.show_doc', $params);
-                $del_url = $urlGenerator->linkToRoute('bestand.bestand.del_doc', $params);
+                $show_url = $this->urlGenerator->linkToRoute('bestand.bestand.show_doc', $params);
+                $del_url = $this->urlGenerator->linkToRoute('bestand.bestand.del_doc', $params);
 
                 echo('<tr>');
                 echo('<td><a href="' . $show_url . '">' . htmlspecialchars($content['titel']) . '</a></td>');
@@ -373,5 +398,13 @@ class Bestand
                 echo('</tr>');
             }
         $stmt->closeCursor();
+    }
+
+    public function echoCreateBestand()
+    {
+        $params['kategorie'] = $this->kategorie;
+        $absoluteUrl = $this->urlGenerator->linkToRoute('bestand.editor.create', $params);
+
+        echo('<p><a href="' . $absoluteUrl . '">neu</a>');
     }
 }

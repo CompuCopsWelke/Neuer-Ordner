@@ -28,12 +28,18 @@ class PageController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function index(): TemplateResponse
+    public function index($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis): TemplateResponse
     {
-        Util::addStyle(Application::APP_ID, 'bestand');
+        $params = [];
+        if (0 < strlen($kategorie)) $params['kategorie'] = $kategorie;
+        if (0 < strlen($suchfeld)) $params['suchfeld'] = $suchfeld;
+        if (0 < strlen($suchtext)) $params['suchtext'] = $suchtext;
+        if (0 < strlen($datumfeld)) $params['datumfeld'] = $datumfeld;
+        if (0 < strlen($von)) $params['von'] = $von;
+        if (0 < strlen($bis)) $params['bis'] = $bis;
 
-        // TODO $params['week'] = $week;
-        return new TemplateResponse(Application::APP_ID, 'main'); # , $params
+        Util::addStyle(Application::APP_ID, 'bestand');
+        return new TemplateResponse(Application::APP_ID, 'main', $params);
     }
 
     /**
@@ -45,12 +51,17 @@ class PageController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function indexPost($week, $mitarbeiter, $pruef_filter): \OCP\AppFramework\Http\Response
+    public function indexPost($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis): \OCP\AppFramework\Http\Response
     {
-        if (0 < strlen($week) || (0 < strlen($mitarbeiter))) {
-            $params['week'] = $week;
-            $params['mitarbeiter'] = $mitarbeiter;
-            $params['pruef_filter'] = $pruef_filter;
+        $params = [];
+        if (0 < strlen($kategorie)) $params['kategorie'] = $kategorie;
+        if (0 < strlen($suchfeld)) $params['suchfeld'] = $suchfeld;
+        if (0 < strlen($suchtext)) $params['suchtext'] = $suchtext;
+        if (0 < strlen($datumfeld)) $params['datumfeld'] = $datumfeld;
+        if (0 < strlen($von)) $params['von'] = $von;
+        if (0 < strlen($bis)) $params['bis'] = $bis;
+
+        if (0 < count($params)) {
             $urlGenerator = \OC::$server->getURLGenerator();
             $absoluteUrl = $urlGenerator->linkToRoute('bestand.page.index', $params);
             return new RedirectResponse($absoluteUrl);

@@ -12,9 +12,9 @@ $b = new Bestandliste($_);
 
     <input type="text" maxlenght="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>" />
 
-    <?php  $b->selectDatumfeld(); ?>
-    <input type="date" name="von" id="von" />
-    <input type="date" name="bis" id="bis" />
+    <?php $b->selectDatumfeld(); ?>
+    <input type="date" name="von" id="von" value="<?php $b->echoVon() ?>" />
+    <input type="date" name="bis" id="bis" value="<?php $b->echoBis() ?>" />
 
     <input type="submit" value="Suche">
 </form>
