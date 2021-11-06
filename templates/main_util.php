@@ -15,6 +15,7 @@ class Bestandliste
     private $datumfeld;
     private $von;
     private $bis;
+    private $sort;
 
     private const SuchFeldList = [
         ['inventar_nr', 'Inventar-Nr'], 
@@ -43,6 +44,11 @@ class Bestandliste
         ['prueftermin2', 'Prüftermin2']
     ];
 
+    private const SortierungList = [
+        ['standard', 'Standard'],
+        ['datum', 'Datum']
+    ];
+
 
     /**
      * Bestandliste constructor.
@@ -57,6 +63,8 @@ class Bestandliste
         $this->datumfeld = array_key_exists( 'datumfeld', $post_arr) ? $post_arr['datumfeld'] : '';
         $this->von = array_key_exists( 'von', $post_arr) ? $post_arr['von'] : '';
         $this->bis = array_key_exists( 'bis', $post_arr) ? $post_arr['bis'] : '';
+
+        $this->sort = array_key_exists( 'sort', $post_arr) ? $post_arr['sort'] : '';
 
         $user = \OC::$server->getUserSession()->getUser();
         if (null === $user) {
@@ -150,6 +158,19 @@ class Bestandliste
         echo('</select>');
     }
 
+    public function selectSortierung()
+    {
+        echo('<select name="sort">');
+
+        foreach (Bestandliste::SortierungList as $f) {
+            $s = '<option value="' . $f[0] . '"';
+            if ($this->sort == $f[0]) $s .= ' selected';
+
+            echo($s. '>' . $f[1] . "</option>\n");
+        }
+        echo('</select>');
+    }
+
     public function echoVon()
     {
         echo($this->von);
@@ -163,11 +184,11 @@ class Bestandliste
     
     public function showBestand()
     {
-        $sql = "SELECT b.id, k.name,
+        $sql = "SELECT b.id, 
+            k.name as kategorie_name,
             b.inventar_nr,
             b.serien_nr,
             b.weitere_nr,
-            b.geheim_nr,
             b.bezeichnung,
             b.typenbezeichnung,
             b.lieferant,
@@ -184,7 +205,7 @@ class Bestandliste
             to_char(b.ruecknahmedatum, 'YYYY-MM-DD') as ruecknahmedatum, 
             to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1, 
             to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2, 
-            b.bemerkung,
+            substring(b.bemerkung for 50) as bemerkung,
             b.fluke_nr
         FROM oc_bdb_bestand b 
             inner join oc_bdb_kategorie k on (b.kategorie=k.id)
@@ -194,15 +215,13 @@ class Bestandliste
         $sql .= $this->addSuchFeld();
         $sql .= $this->addDatumFeld();
 
-        $sql .= ' ORDER BY 1;';
+        $sql .= $this->addOrderBy();
 
         $stmt = $this->dbh->prepare($sql);
         if (0 < strlen($this->kategorie)) $stmt->bindParam(':kategorie', $this->kategorie);
         if (0 < strlen($this->suchtext)) $stmt->bindParam(':suchtext', $this->suchtext);
         if (0 < strlen($this->von)) $stmt->bindParam(':von', $this->von);
         if (0 < strlen($this->bis)) $stmt->bindParam(':bis', $this->bis);
-
-        # $stmt->bindValue(':wochenbeginn', date_format($this->wochenbeginn, 'Y-m-d'));
         $stmt->execute();
         while ($zeile = $stmt->fetch()) {
             $this->echoZeile($zeile);
@@ -249,12 +268,55 @@ class Bestandliste
                 return '';
     }
 
+    private function addOrderBy()
+    {
+        $orderby = '';
+        foreach (Bestandliste::SortierungList as $f)
+            if ($this->sort == $f[0]) {
+                $orderby = $f[0];
+                break;
+            }
+
+        switch ($orderby) {
+        case "datum":
+            $orderby = ''; # TODO
+            break;
+        default:
+            $orderby = ' Order by k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
+        }
+
+        return $orderby;
+    }
+
     private function echoZeile($zeile)
     {
+        $params['id'] = $zeile['id'];
+        $edit_url = $this->urlGenerator->linkToRoute('bestand.editor.edit', $params);
+
         echo('<tr>');
-        foreach ($zeile as $f) {
-            echo('<td>' . $f . '</td>');
-        }
+        echo('<td>' . $zeile['kategorie_name'] . '</td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['inventar_nr']) . '</td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['serien_nr']) . '</td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['weitere_nr']) . '</td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['bezeichnung']) . '</td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['typenbezeichnung']) . '</td>');
+        echo('<td>' . $zeile['lieferant'] . '</td>');
+        echo('<td>' . $zeile['standort'] . '</td>');
+        echo('<td>' . $zeile['nutzer'] . '</td>');
+        echo('<td>' . $zeile['anschaffungswert'] . '</td>');
+        echo('<td>' . $zeile['st_beleg_nr'] . '</td>');
+        echo('<td>' . $zeile['anschaffungsdatum'] . '</td>');
+        echo('<td>' . $zeile['zubehoer'] . '</td>');
+        echo('<td>' . $zeile['st_inventar_nr'] . '</td>');
+        echo('<td>' . $zeile['stb_inventar_nr'] . '</td>');
+        echo('<td>' . $zeile['konto'] . '</td>');
+        echo('<td>' . $zeile['ausgabedatum'] . '</td>');
+        echo('<td>' . $zeile['ruecknahmedatum'] . '</td>');
+        echo('<td>' . $zeile['prueftermin1'] . '</td>');
+        echo('<td>' . $zeile['prueftermin2'] . '</td>');
+        echo('<td>' . $zeile['bemerkung'] . '</td>');
+        echo('<td>' . $zeile['fluke_nr'] . '</td>');
+
         echo("</tr>\n");
     }
 

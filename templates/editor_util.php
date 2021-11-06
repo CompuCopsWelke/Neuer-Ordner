@@ -102,8 +102,6 @@ class Bestand
         $conn = $db_config['system'] . ':host=' . $db_config['host'] . ';dbname=' . $db_config['dbname'] . ';port=' . $db_config['port'];
         $this->dbh = new PDO($conn, $db_config['user'], $db_config['password']);
         $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $this->st_adr = $ST_ADR;
     }
 
     /**
@@ -112,9 +110,34 @@ class Bestand
     private function load(): bool
     {
         $back = false;
-        $sql = 'SELECT b.*, k.name as kategorie_name 
-            FROM oc_bdb_bestand b 
-            WHERE b.id=:id;';
+        $sql = "SELECT 
+            b.id, 
+            b.kategorie, 
+            k.name as kategorie_name,
+            b.inventar_nr,
+            b.serien_nr,
+            b.weitere_nr,
+            b.geheim_nr,
+            b.bezeichnung,
+            b.typenbezeichnung,
+            b.lieferant,
+            b.standort,
+            b.nutzer,
+            b.anschaffungswert,
+            b.st_beleg_nr,
+            to_char(b.anschaffungsdatum, 'YYYY-MM-DD') as anschaffungsdatum, 
+            b.zubehoer,
+            b.st_inventar_nr,
+            b.stb_inventar_nr,
+            b.konto,
+            to_char(b.ausgabedatum, 'YYYY-MM-DD') as ausgabedatum, 
+            to_char(b.ruecknahmedatum, 'YYYY-MM-DD') as ruecknahmedatum, 
+            to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1, 
+            to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2, 
+            substring(b.bemerkung for 50) as bemerkung,
+            b.fluke_nr
+            FROM oc_bdb_bestand b inner join oc_bdb_kategorie k on (b.kategorie = k.id)
+            WHERE b.id=:id;";
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
@@ -172,6 +195,11 @@ class Bestand
         $stmt->closeCursor();
     }
 
+    public function echoUpdateTeil()
+    {
+        echo($this->urlGenerator->linkToRoute('bestand.editor.update', []));
+    }
+
     public function echoMessage()
     {
         echo($this->message);
@@ -216,8 +244,11 @@ class Bestand
         $stmt->execute();
 
         while ($content = $stmt->fetch()) {
+            $k_id = $content['id'];
+            $selected = ($this->kategorie == $k_id) ? ' selected' : '';  
             $s = htmlspecialchars($content['name']);
-            echo('<option value="'.$content['id'].'">' . $s . '</option>');
+
+            echo('<option value="'.$k_id.'"'.$selected.'>'.$s.'</option>');
         }
         $stmt->closeCursor();
         echo('</select>');
@@ -387,8 +418,8 @@ class Bestand
         if ($stmt->execute())
             while ($content = $stmt->fetch()) {
                 $params['doc_id'] = $content['id'];
-                $show_url = $this->urlGenerator->linkToRoute('bestand.bestand.show_doc', $params);
-                $del_url = $this->urlGenerator->linkToRoute('bestand.bestand.del_doc', $params);
+                $show_url = $this->urlGenerator->linkToRoute('bestand.editor.show_doc', $params);
+                $del_url = $this->urlGenerator->linkToRoute('bestand.editor.del_doc', $params);
 
                 echo('<tr>');
                 echo('<td><a href="' . $show_url . '">' . htmlspecialchars($content['titel']) . '</a></td>');

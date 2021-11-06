@@ -28,7 +28,7 @@ class PageController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function index($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis): TemplateResponse
+    public function index($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis, $sort): TemplateResponse
     {
         $params = [];
         if (0 < strlen($kategorie)) $params['kategorie'] = $kategorie;
@@ -37,6 +37,7 @@ class PageController extends Controller
         if (0 < strlen($datumfeld)) $params['datumfeld'] = $datumfeld;
         if (0 < strlen($von)) $params['von'] = $von;
         if (0 < strlen($bis)) $params['bis'] = $bis;
+        if (0 < strlen($sort)) $params['sort'] = $sort;
 
         Util::addStyle(Application::APP_ID, 'bestand');
         return new TemplateResponse(Application::APP_ID, 'main', $params);
@@ -51,7 +52,7 @@ class PageController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function indexPost($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis): \OCP\AppFramework\Http\Response
+    public function indexPost($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis, $sort): \OCP\AppFramework\Http\Response
     {
         $params = [];
         if (0 < strlen($kategorie)) $params['kategorie'] = $kategorie;
@@ -60,6 +61,7 @@ class PageController extends Controller
         if (0 < strlen($datumfeld)) $params['datumfeld'] = $datumfeld;
         if (0 < strlen($von)) $params['von'] = $von;
         if (0 < strlen($bis)) $params['bis'] = $bis;
+        if (0 < strlen($sort)) $params['sort'] = $sort;
 
         if (0 < count($params)) {
             $urlGenerator = \OC::$server->getURLGenerator();

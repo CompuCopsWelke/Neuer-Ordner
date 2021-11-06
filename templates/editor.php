@@ -9,7 +9,7 @@ $b = new Bestand($_);
 <H2>Bestand</H2>
 
 <?php if ($b->isEditable()) { ?>
-<form action="update_bestand" name="update_bestand" method="post" accept-charset="UTF-8" >
+<form action="<?php  $b->echoUpdateTeil(); ?>" name="update_bestand" method="post" accept-charset="UTF-8" >
 <input type="hidden" id="id" name="id" value="<?php $b->echoBestandId(); ?>">
 <?php } ?>
 
@@ -27,14 +27,14 @@ $b = new Bestand($_);
 <tr><th>Anschaffungswert:</th><?php $b->echoAnschaffungswert(); ?></tr>
 <tr><th>ST-Beleg-Nr:</th><?php $b->echoSt_beleg_nr(); ?></tr>
 <tr><th>Anschaffungsdatum:</th><?php $b->echoAnschaffungsdatum(); ?></tr>
-<tr><th>Uubehoer:</th><?php $b->echoZubehoer(); ?></tr>
+<tr><th>Zubehör:</th><?php $b->echoZubehoer(); ?></tr>
 <tr><th>ST-Inventar-Nr:</th><?php $b->echoSt_inventar_nr(); ?></tr>
 <tr><th>STB-Inventar-Nr:</th><?php $b->echoStb_inventar_nr(); ?></tr>
 <tr><th>Konto:</th><?php $b->echoKonto(); ?></tr>
 <tr><th>Ausgabedatum:</th><?php $b->echoAusgabedatum(); ?></tr>
 <tr><th>Rücknahmedatum:</th><?php $b->echoRuecknahmedatum(); ?></tr>
-<tr><th>Prueftermin1:</th><?php $b->echoPrueftermin1(); ?></tr>
-<tr><th>Prueftermin2:</th><?php $b->echoPrueftermin2(); ?></tr>
+<tr><th>Prüftermin 1:</th><?php $b->echoPrueftermin1(); ?></tr>
+<tr><th>Prüftermin 2:</th><?php $b->echoPrueftermin2(); ?></tr>
 <tr><th>Bemerkung:</th><?php $b->echoBemerkung(); ?></tr>
 <tr><th>Fluke-Nr:</th><?php $b->echoFluke_nr(); ?></tr>
 </table>

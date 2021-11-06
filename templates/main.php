@@ -5,16 +5,16 @@ $b = new Bestandliste($_);
 ?>
 
 <form action="<?php  $b->echoGotoIndex(); ?>" name="suche" method="post">
-    Kategorie:
-    <?php  $b->selectKategorie(); ?>
+    Kategorie: <?php  $b->selectKategorie(); ?>
 
     <?php  $b->selectSuchfeld(); ?>
-
     <input type="text" maxlenght="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>" />
 
-    <?php $b->selectDatumfeld(); ?>
+    Datum: <?php $b->selectDatumfeld(); ?>
     <input type="date" name="von" id="von" value="<?php $b->echoVon() ?>" />
     <input type="date" name="bis" id="bis" value="<?php $b->echoBis() ?>" />
+ 
+     Sortierung:  <?php  $b->selectSortierung(); ?>
 
     <input type="submit" value="Suche">
 </form>
@@ -25,28 +25,27 @@ $b = new Bestandliste($_);
 <table border="1">
     <tr>
     <th>Kategorie</th>
-    <th>inventar_nr</th>
-    <th>serien_nr</th>
-    <th>weitere_nr</th>
-    <th>geheim_nr</th>
-    <th>bezeichnung</th>
-    <th>typenbezeichnung</th>
-    <th>lieferant</th>
-    <th>standort</th>
-    <th>nutzer</th>
-    <th>anschaffungswert</th>
-    <th>st_beleg_nr</th>
-    <th>anschaffungsdatum</th>
-    <th>zubehoer</th>
-    <th>st_inventar_nr</th>
-    <th>stb_inventar_nr</th>
-    <th>konto</th>
-    <th>ausgabedatum</th>
-    <th>ruecknahmedatum</th>
-    <th>prueftermin1</th>
-    <th>prueftermin2</th>
-    <th>bemerkung</th>
-    <th>fluke_nr</th>
+    <th>Inventar-Nr</th>
+    <th>Serien-Nr</th>
+    <th>Weitere Nr</th>
+    <th>Bezeichnung</th>
+    <th>Typenbezeichnung</th>
+    <th>Lieferant</th>
+    <th>Standort</th>
+    <th>Nutzer</th>
+    <th>Anschaffungswert</th>
+    <th>SB-Beleg-nr</th>
+    <th>Anschaffungsdatum</th>
+    <th>Zubehör</th>
+    <th>St-inventar-nr</th>
+    <th>StB-Inventar-Nr</th>
+    <th>Konto</th>
+    <th>Ausgabedatum</th>
+    <th>Rücknahmedatum</th>
+    <th>Prüftermin1</th>
+    <th>Prüftermin2</th>
+    <th>Bemerkung</th>
+    <th>Fluke-Nr</th>
     </tr>
 <?php  $b->showBestand(); ?>
 </table>
