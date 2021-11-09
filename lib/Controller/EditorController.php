@@ -37,7 +37,7 @@ class EditorController extends Controller
             $params = [];
             $params['error_msg'] = 'unbekannter Kollege';
         } else {
-            $sql = 'Delete from deleteBestand(:id, :logged_in_user);';
+            $sql = 'Select deleteBestand(:id, :logged_in_user);';
             $stmt = $this->getDbh()->prepare($sql);
             $params = False;
             $sql_params = [
@@ -54,7 +54,7 @@ class EditorController extends Controller
             $stmt->closeCursor();
             if (False === $params) {
                 $params = [];
-                $params['error_msg'] = "nix geloescht.";
+                $params['error_msg'] = 'nix geloescht.';
             }
         }
 
@@ -358,7 +358,7 @@ class EditorController extends Controller
                     $stmt->execute();
                     $ret_params = $stmt->fetch();
                     if (False === $ret_params)
-                        $ret_params['message'] = "unbekannter Kollege: ".$user->getUID();
+                        $ret_params['message'] = 'unbekannter Kollege: '.$user->getUID();
                     $ret_params['id'] = $bestand_id;
                 } catch (\Exception $e) {
                     $message = $e->getMessage();
@@ -367,7 +367,7 @@ class EditorController extends Controller
             }
 
         } else
-            $ret_params['message'] = "Datei fehlerhaft". $uploadedFile['error'];
+            $ret_params['message'] = 'Datei fehlerhaft'. $uploadedFile['error'];
 
         $urlGenerator = \OC::$server->getURLGenerator();
         $edit_url = $urlGenerator->linkToRoute('bestand.editor.edit', $ret_params);

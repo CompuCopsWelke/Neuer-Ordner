@@ -177,17 +177,21 @@ class Bestand
         return $back;
     }
 
-    private function getPermissions() # TODO , $kategorie
+    private function getPermissions()
     {
         $this->editable = false;
         $sql = 'SELECT id
             FROM oc_bdb_kategorie_perm
-            WHERE uid=:uid 
-            Limit 1;';
-              # kategorie=:kategorie TODO
+            WHERE uid=:uid';
+        if (0 < $this->kategorie)
+            $sql .= ' and kategorie=:kategorie';
+
+        $sql .= ' Limit 1;';
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':uid', $this->uid);
+        if (0 < $this->kategorie)
+            $stmt->bindParam(':kategorie', $this->kategorie);
         $stmt->execute();
         if ($content = $stmt->fetch())
             $this->editable = true;
@@ -198,6 +202,11 @@ class Bestand
     public function echoUpdateTeil()
     {
         echo($this->urlGenerator->linkToRoute('bestand.editor.update', []));
+    }
+
+    public function echoDeleteTeil()
+    {
+        echo($this->urlGenerator->linkToRoute('bestand.editor.delete', []));
     }
 
     public function echoMessage()

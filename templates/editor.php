@@ -41,7 +41,10 @@ $b = new Bestand($_);
 
 <?php if ($b->isEditable()) { ?>
 <input type="submit" name="submit" id="submit" value="Speichern" />
-<input type="button" name="delete" id="delete" value="Löschen" />
+</form>
+<form action="<?php  $b->echoDeleteTeil(); ?>" name="delete_bestand" method="post" accept-charset="UTF-8" >
+<input type="hidden" id="id" name="id" value="<?php $b->echoBestandId(); ?>">
+<input type="submit" name="delete" id="delete" value="Löschen" />
 </form>
 <?php } ?>
 <?php  $b->echoCreateBestand(); ?>

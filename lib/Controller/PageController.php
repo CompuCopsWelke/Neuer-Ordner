@@ -28,7 +28,7 @@ class PageController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function index($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis, $sort): TemplateResponse
+    public function index($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis, $sort, $message): TemplateResponse
     {
         $params = [];
         if (0 < strlen($kategorie)) $params['kategorie'] = $kategorie;
@@ -38,6 +38,7 @@ class PageController extends Controller
         if (0 < strlen($von)) $params['von'] = $von;
         if (0 < strlen($bis)) $params['bis'] = $bis;
         if (0 < strlen($sort)) $params['sort'] = $sort;
+        if (0 < strlen($message)) $params['message'] = $message;
 
         Util::addStyle(Application::APP_ID, 'bestand');
         return new TemplateResponse(Application::APP_ID, 'main', $params);

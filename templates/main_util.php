@@ -20,8 +20,7 @@ class Bestandliste
     private const SuchFeldList = [
         ['inventar_nr', 'Inventar-Nr'], 
         ['serien_nr', 'Serien-Nr'],
-        ['weitere_nr', 'weitere nr'],
-        ['geheim_nr', 'geheim_nr'],
+        ['weitere_nr', 'weitere Nr'],
         ['bezeichnung', 'Bezeichnung'],
         ['typenbezeichnung', 'Typenbezeichnung'],
         ['lieferant', 'Lieferant'],
@@ -65,6 +64,8 @@ class Bestandliste
         $this->bis = array_key_exists( 'bis', $post_arr) ? $post_arr['bis'] : '';
 
         $this->sort = array_key_exists( 'sort', $post_arr) ? $post_arr['sort'] : '';
+
+        $this->message = array_key_exists( 'message', $post_arr) ? $post_arr['message'] : '';
 
         $user = \OC::$server->getUserSession()->getUser();
         if (null === $user) {
@@ -196,15 +197,15 @@ class Bestandliste
             b.nutzer,
             b.anschaffungswert,
             b.st_beleg_nr,
-            to_char(b.anschaffungsdatum, 'YYYY-MM-DD') as anschaffungsdatum, 
+            to_char(b.anschaffungsdatum, 'DD.MM.YYYY') as anschaffungsdatum, 
             b.zubehoer,
             b.st_inventar_nr,
             b.stb_inventar_nr,
             b.konto,
-            to_char(b.ausgabedatum, 'YYYY-MM-DD') as ausgabedatum, 
-            to_char(b.ruecknahmedatum, 'YYYY-MM-DD') as ruecknahmedatum, 
-            to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1, 
-            to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2, 
+            to_char(b.ausgabedatum, 'DD.MM.YYYY') as ausgabedatum, 
+            to_char(b.ruecknahmedatum, 'DD.MM.YYYY') as ruecknahmedatum, 
+            to_char(b.prueftermin1, 'DD.MM.YYYY') as prueftermin1, 
+            to_char(b.prueftermin2, 'DD.MM.YYYY') as prueftermin2, 
             substring(b.bemerkung for 50) as bemerkung,
             b.fluke_nr
         FROM oc_bdb_bestand b 
@@ -236,12 +237,21 @@ class Bestandliste
         if (0 >= strlen($this->suchtext))
             return '';
 
+        if ('' == $this->suchfeld)
+            return " and ((b.inventar_nr ilike :suchtext)
+                        or (b.serien_nr ilike :suchtext)
+                        or (b.weitere_nr ilike :suchtext)
+                        or (b.bezeichnung ilike :suchtext)
+                        or (b.typenbezeichnung ilike :suchtext)
+                        )";
+
         foreach (Bestandliste::SuchFeldList as $f)
             if ($this->suchfeld == $f[0]) 
-                return " and ".$f[0] . ' = :suchtext ';
+                return " and ".$f[0] . ' ilike :suchtext ';
 
         return '';
     }
+
 
     private function addDatumFeld()
     {
@@ -255,38 +265,37 @@ class Bestandliste
         if (0 >= strlen($suchfeld))
             return '';
 
-
         if (0 < strlen($this->von)) {
             if (0 < strlen($this->bis)) {
-                return 'and (('.$suchfeld.'>= :von) and ('.$suchfeld.'<=:bis))';
+                return ' and (('.$suchfeld.'>= :von) and ('.$suchfeld.'<=:bis))';
             } else
-                return 'and ('.$suchfeld.'>= :von)';
+                return ' and ('.$suchfeld.'>= :von)';
         } else
             if (0 < strlen($this->bis)) 
-                return 'and ('.$suchfeld.'<=:bis)';
+                return ' and ('.$suchfeld.'<=:bis)';
             else
                 return '';
     }
 
+
     private function addOrderBy()
     {
-        $orderby = '';
+        $selected_sort = '';
         foreach (Bestandliste::SortierungList as $f)
             if ($this->sort == $f[0]) {
-                $orderby = $f[0];
+                $selected_sort = $f[0];
                 break;
             }
 
-        switch ($orderby) {
-        case "datum":
-            $orderby = ''; # TODO
-            break;
-        default:
-            $orderby = ' Order by k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
-        }
+        if ( "datum" == $selected_sort) 
+            foreach (Bestandliste::DatumFeldList as $f)
+                if ($this->datumfeld == $f[0]) 
+                    return ' Order by '.$f[0].',k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
 
-        return $orderby;
+        # Standard oder falscher Paramter
+        return ' Order by k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
     }
+
 
     private function echoZeile($zeile)
     {
@@ -319,6 +328,7 @@ class Bestandliste
 
         echo("</tr>\n");
     }
+
 
     public function echoSuchtext()
     {
