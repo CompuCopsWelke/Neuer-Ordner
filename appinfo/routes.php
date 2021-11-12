@@ -7,7 +7,7 @@ return [
 
 		['name' => 'editor#edit', 'url' => '/teil', 'verb' => 'GET' ],
 		['name' => 'editor#create', 'url' => '/create_teil', 'verb' => 'GET' ],
-		['name' => 'editor#delete', 'url' => '/delete_teil', 'verb' => 'POST' ],
+		['name' => 'editor#delete', 'url' => '/delete_teil', 'verb' => 'GET' ],
         ['name' => 'editor#update', 'url' => '/update_teil', 'verb' => 'POST' ],
 
         ['name' => 'editor#add_doc', 'url' => '/add_doc_bestand', 'verb' => 'POST' ],

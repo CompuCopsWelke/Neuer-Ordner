@@ -204,10 +204,6 @@ class Bestand
         echo($this->urlGenerator->linkToRoute('bestand.editor.update', []));
     }
 
-    public function echoDeleteTeil()
-    {
-        echo($this->urlGenerator->linkToRoute('bestand.editor.delete', []));
-    }
 
     public function echoMessage()
     {
@@ -440,11 +436,18 @@ class Bestand
         $stmt->closeCursor();
     }
 
-    public function echoCreateBestand()
+    public function echoDeleteTeil()
+    {
+        $params['id'] = $this->id;
+        $absoluteUrl = $this->urlGenerator->linkToRoute('bestand.editor.delete', $params);
+        echo('<div id="bestand_delete"><a href="' . $absoluteUrl . '">löschen</a></div>');
+    }
+
+    public function echoCreateTeil()
     {
         $params['kategorie'] = $this->kategorie;
         $absoluteUrl = $this->urlGenerator->linkToRoute('bestand.editor.create', $params);
 
-        echo('<p><a href="' . $absoluteUrl . '">neu</a>');
+        echo('<a href="' . $absoluteUrl . '">neu</a>');
     }
 }

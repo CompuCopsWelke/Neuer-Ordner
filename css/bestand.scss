@@ -55,6 +55,7 @@ td:nth-child(11)
     background-color: #ffff99;
 }
 
+
 #bestand H2 {
     font-size: 14px;
     margin-top: 6px;
@@ -80,4 +81,12 @@ td:nth-child(11)
 
 #st_editor a {
     color: blue;
+}
+
+#bestand_delete a {
+    float: right;
+}
+
+#bestand_delete a:hover {
+    background-color: #ff0000;
 }
