@@ -169,6 +169,11 @@ class EditorController extends Controller
             }
 
             $anschaffungswert = is_numeric($anschaffungswert) ? intval($anschaffungswert) : 0;
+            if (0 >= strlen($anschaffungsdatum)) $anschaffungsdatum = null; 
+            if (0 >= strlen($ausgabedatum)) $ausgabedatum = null; 
+            if (0 >= strlen($ruecknahmedatum)) $ruecknahmedatum = null; 
+            if (0 >= strlen($prueftermin1)) $prueftermin1 = null; 
+            if (0 >= strlen($prueftermin2)) $prueftermin2 = null; 
 
             $stmt = $dbh->prepare($sql);
             $sql_params = [
