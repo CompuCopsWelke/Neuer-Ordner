@@ -256,11 +256,12 @@ class EditorController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function edit($id): TemplateResponse
+    public function edit($id, $message): TemplateResponse
     {
         Util::addStyle(Application::APP_ID, 'bestand');
 
         $params['id'] = $id;
+        $params['message'] = $message;
         return new TemplateResponse(Application::APP_ID, 'editor', $params);
     }
 
@@ -372,7 +373,7 @@ class EditorController extends Controller
             }
 
         } else
-            $ret_params['message'] = 'Datei fehlerhaft'. $uploadedFile['error'];
+            $ret_params['message'] = 'Datei fehlerhaft: '. $uploadedFile['error'];
 
         $urlGenerator = \OC::$server->getURLGenerator();
         $edit_url = $urlGenerator->linkToRoute('bestand.editor.edit', $ret_params);

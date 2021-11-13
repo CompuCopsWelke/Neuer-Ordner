@@ -450,4 +450,9 @@ class Bestand
 
         echo('<a href="' . $absoluteUrl . '">neu</a>');
     }
+
+    public function echoAddDocLink()
+    {
+        echo($this->urlGenerator->linkToRoute('bestand.editor.add_doc'));
+    }
 }
