@@ -42,12 +42,10 @@ $b = new Bestand($_);
 <?php if ($b->isEditable()) { ?>
 <input type="submit" name="submit" id="submit" value="Speichern" />
 </form>
-<?php } ?>
-<?php  $b->echoCreateTeil(); ?>
-
-<?php  if ($b->isEditable())$b->echoDeleteTeil(); ?>
-
-<?php if (0 < $b->getBestandId()) { ?>
+<?php  $b->echoDeleteTeil(); 
+    }
+$b->echoCreateTeil();
+if (0 < $b->getBestandId()) { ?>
 <br>
 <div id="bestand">
 <hr>
