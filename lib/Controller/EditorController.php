@@ -124,49 +124,16 @@ class EditorController extends Controller
         if (null === $user) $error_msg = 'unbekannter Kollege';
 
         if (0 === strlen($error_msg)) {
-
-            $id = is_numeric($id) ? intval($id) : 0;
-            if ( 0 < $id) {
-                $sql = 'UPDATE oc_bdb_bestand SET
-                        kategorie = :kategorie,
-                        inventar_nr = :inventar_nr,
-                        serien_nr = :serien_nr,
-                        weitere_nr = :weitere_nr,
-                        geheim_nr = :geheim_nr,
-                        bezeichnung = :bezeichnung,
-                        typenbezeichnung = :typenbezeichnung,
-                        lieferant = :lieferant,
-                        standort = :standort,
-                        nutzer = :nutzer,
-                        st_beleg_nr = :st_beleg_nr,
-                        zubehoer = :zubehoer,
-                        st_inventar_nr = :st_inventar_nr,
-                        stb_inventar_nr = :stb_inventar_nr,
-                        konto = :konto,
-                        bemerkung = :bemerkung,
-                        fluke_nr = :fluke_nr,
-                        anschaffungswert = :anschaffungswert,
-                        anschaffungsdatum = :anschaffungsdatum,
-                        prueftermin1 = :prueftermin1,
-                        prueftermin2 = :prueftermin2,
-                        ausgabedatum = :ausgabedatum,
-                        ruecknahmedatum = :ruecknahmedatum
-                        WHERE id = :id;';
-            } else {
-                $sql = 'INSERT INTO oc_bdb_bestand (
-                        kategorie, inventar_nr, serien_nr, weitere_nr, geheim_nr,
-                        bezeichnung, typenbezeichnung, lieferant, standort, nutzer, st_beleg_nr,
-                        zubehoer, st_inventar_nr, stb_inventar_nr, konto, bemerkung, fluke_nr,
-                        anschaffungswert, anschaffungsdatum, prueftermin1, prueftermin2, ausgabedatum,
-                        ruecknahmedatum
-                    ) VALUES (
+            $sql = 'Select * from updateBestand(:id,
                     :kategorie, :inventar_nr, :serien_nr, :weitere_nr, :geheim_nr,
                     :bezeichnung, :typenbezeichnung, :lieferant, :standort, :nutzer, :st_beleg_nr,
                     :zubehoer, :st_inventar_nr, :stb_inventar_nr, :konto, :bemerkung, :fluke_nr,
                     :anschaffungswert, :anschaffungsdatum, :prueftermin1, :prueftermin2,
-                    :ausgabedatum, :ruecknahmedatum
+                    :ausgabedatum, :ruecknahmedatum, :logged_in_user
                     );';
-            }
+
+            $id = is_numeric($id) ? intval($id) : 0;
+            if (0 >=  $id) $id = null; 
 
             $anschaffungswert = is_numeric($anschaffungswert) ? intval($anschaffungswert) : 0;
             if (0 >= strlen($anschaffungsdatum)) $anschaffungsdatum = null; 
@@ -177,6 +144,7 @@ class EditorController extends Controller
 
             $stmt = $dbh->prepare($sql);
             $sql_params = [
+                 ':id' => $id,
                 ':kategorie' => $kategorie,
                 ':inventar_nr' => $inventar_nr,
                 ':serien_nr' => $serien_nr,
@@ -199,10 +167,10 @@ class EditorController extends Controller
                 ':prueftermin1' => $prueftermin1,
                 ':prueftermin2' => $prueftermin2,
                 ':ausgabedatum' => $ausgabedatum,
-                ':ruecknahmedatum' => $ruecknahmedatum
-            ];
+                ':ruecknahmedatum' => $ruecknahmedatum,
 
-            if (0 < $id) $sql_params[':id'] = $id;
+                ':logged_in_user' => $user->getUID()
+            ];
 
             try {
                 $stmt->execute($sql_params);
@@ -212,6 +180,9 @@ class EditorController extends Controller
             }
             $stmt->closeCursor();
         }
+
+        if (0 < strlen($error_msg))
+            $params['message'] = $error_msg;
 
         $urlGenerator = \OC::$server->getURLGenerator();
         if (False === $params) {
@@ -239,7 +210,6 @@ class EditorController extends Controller
             $params['prueftermin2'] = $prueftermin2;
             $params['ausgabedatum'] = $ausgabedatum;
             $params['ruecknahmedatum'] = $ruecknahmedatum;
-            $params['message'] = $error_msg;
 
             return new RedirectResponse($urlGenerator->linkToRoute('bestand.editor.create', $params));
         }
@@ -367,7 +337,7 @@ class EditorController extends Controller
                         $ret_params['message'] = 'unbekannter Kollege: '.$user->getUID();
                     $ret_params['id'] = $bestand_id;
                 } catch (\Exception $e) {
-                    $message = $e->getMessage();
+                    $ret_params['message'] = $e->getMessage();
                 }
                 $stmt->closeCursor();
             }
