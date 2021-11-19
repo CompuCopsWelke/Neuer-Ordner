@@ -13,7 +13,7 @@
     <category>office</category>
 
     <dependencies>
-        <nextcloud min-version="19" max-version="20"/>
+        <nextcloud min-version="19" max-version="25"/>
     </dependencies>
     <navigations>
         <navigation>
