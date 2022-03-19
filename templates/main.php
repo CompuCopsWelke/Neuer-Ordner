@@ -1,10 +1,16 @@
+<?php
+/** @var array $_ */
+
+/** @var \OCP\IL10N $l */
+script('bestand', 'main');
+?>
+
 <div id="bestand">
 <?php  
 require 'main_util.php'; 
 $b = new Bestandliste($_);
 ?>
-
-<form action="<?php  $b->echoGotoIndex(); ?>" name="suche" method="post">
+<form action="<?php  $b->echoGotoIndex(); ?>" name="suche" id="suche" method="post">
     Kategorie: <?php  $b->selectKategorie(); ?>
 
     <?php  $b->selectSuchfeld(); ?>
@@ -22,7 +28,9 @@ $b = new Bestandliste($_);
 <?php  $b->echoMessage(); ?>
 <?php  $b->echoCreateBestand(); ?>
 
+<div id="bestand_table">
 <table border="1">
+   <thead>   
     <tr>
     <th>Kategorie</th>
     <th>Inventar-Nr</th>
@@ -34,7 +42,7 @@ $b = new Bestandliste($_);
     <th>Standort</th>
     <th>Nutzer</th>
     <th>Anschaffungswert</th>
-    <th>SB-Beleg-nr</th>
+    <th>ST-Beleg-nr</th>
     <th>Anschaffungsdatum</th>
     <th>Zubehör</th>
     <th>St-inventar-nr</th>
@@ -47,6 +55,8 @@ $b = new Bestandliste($_);
     <th>Bemerkung</th>
     <th>Fluke-Nr</th>
     </tr>
+   </thead>   
 <?php  $b->showBestand(); ?>
 </table>
+</div>
 </div>

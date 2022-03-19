@@ -37,6 +37,8 @@ class Bestand
     private $ausgabedatum;
     private $ruecknahmedatum;
 
+    private $letzte_kategorie;
+
 
     /**
      * Eintrag constructor.
@@ -50,6 +52,9 @@ class Bestand
 
         if (array_key_exists('id', $params) && is_numeric($params['id']))
             $this->id = $params['id'];
+
+        if (array_key_exists('letzte_kategorie', $params) && is_numeric($params['letzte_kategorie']))
+            $this->letzte_kategorie = $params['letzte_kategorie'];
 
         $this->getDbh();
 
@@ -106,6 +111,7 @@ class Bestand
 
     /**
      * @return bool
+     * H
      */
     private function load(): bool
     {
@@ -116,9 +122,6 @@ class Bestand
             k.name as kategorie_name,
             b.inventar_nr,
             b.serien_nr,
-            b.weitere_nr,
-            b.geheim_nr,
-            b.bezeichnung,
             b.typenbezeichnung,
             b.lieferant,
             b.standort,
@@ -224,6 +227,11 @@ class Bestand
     public function echoBestandId()
     {
         echo($this->id);
+    }
+
+    public function echoLetzteKategorie()
+    {
+        echo($this->letzte_kategorie);
     }
 
     public function echoKategorie()
@@ -379,7 +387,7 @@ class Bestand
     public function echoAnschaffungswert()
     {
         if ($this->editable) {
-            echo('<td><input type="number" name="anschaffungswert" id="anschaffungswert" value="');
+            echo('<td><input type="number" step="0.01" name="anschaffungswert" id="anschaffungswert" style="text-align: right;" value="');
             echo($this->anschaffungswert);
             echo('" /> </td>');
         } else {
@@ -427,8 +435,8 @@ class Bestand
                 $del_url = $this->urlGenerator->linkToRoute('bestand.editor.del_doc', $params);
 
                 echo('<tr>');
-                echo('<td><a href="' . $show_url . '">' . htmlspecialchars($content['titel']) . '</a></td>');
-                echo('<td><a href="' . $show_url . '">' . htmlspecialchars($content['dateiname']) . '</a></td>');
+                echo('<td><a href="' . $show_url . '" target="_blank">' . htmlspecialchars($content['titel']) . '</a></td>');
+                echo('<td><a href="' . $show_url . '" target="_blank">' . htmlspecialchars($content['dateiname']) . '</a></td>');
                 echo('<td><a href="' . $del_url . '"><svg width="20" height="20" viewBox="0 0 20 20" alt="Loeschen">
                         <image x="0" y="0" width="20" height="20" preserveAspectRatio="xMinYMin meet" xlink:href="/apps/bestand/img/delete.svg"  class="app-icon"></image></svg></a></td>');
                 echo('</tr>');
@@ -439,6 +447,7 @@ class Bestand
     public function echoDeleteTeil()
     {
         $params['id'] = $this->id;
+        $params['letzte_kategorie'] = $this->letzte_kategorie;
         $absoluteUrl = $this->urlGenerator->linkToRoute('bestand.editor.delete', $params);
         echo('<div id="bestand_delete"><a href="' . $absoluteUrl . '">löschen</a></div>');
     }
@@ -446,6 +455,7 @@ class Bestand
     public function echoCreateTeil()
     {
         $params['kategorie'] = $this->kategorie;
+        $params['letzte_kategorie'] = $this->letzte_kategorie;
         $absoluteUrl = $this->urlGenerator->linkToRoute('bestand.editor.create', $params);
 
         echo('<a href="' . $absoluteUrl . '">neu</a>');

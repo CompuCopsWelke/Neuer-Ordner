@@ -1,7 +1,7 @@
 <?php
 
 
-class Bestandliste 
+class Bestandliste
 {
     /** @var PDO $dbh */
     private $dbh;
@@ -18,7 +18,7 @@ class Bestandliste
     private $sort;
 
     private const SuchFeldList = [
-        ['inventar_nr', 'Inventar-Nr'], 
+        ['inventar_nr', 'Inventar-Nr'],
         ['serien_nr', 'Serien-Nr'],
         ['weitere_nr', 'weitere Nr'],
         ['bezeichnung', 'Bezeichnung'],
@@ -76,7 +76,7 @@ class Bestandliste
         $this->getDbh();
 
         $this->urlGenerator = \OC::$server->getURLGenerator();
-        # setlocale(LC_TIME,'de_DE.utf8'); 
+        # setlocale(LC_TIME,'de_DE.utf8');
     }
 
     private function getDbh()
@@ -110,7 +110,7 @@ class Bestandliste
 
     public function selectKategorie()
     {
-        echo('<select name="kategorie">');
+        echo('<select name="kategorie" id="kategorie">');
         echo('<option value="">&lt;alle&gt;</option>');
 
         $sql = 'SELECT id, name FROM oc_bdb_kategorie ORDER BY 2;';
@@ -182,10 +182,10 @@ class Bestandliste
         echo($this->bis);
     }
 
-    
+
     public function showBestand()
     {
-        $sql = "SELECT b.id, 
+        $sql = "SELECT b.id,
             k.name as kategorie_name,
             b.inventar_nr,
             b.serien_nr,
@@ -197,21 +197,29 @@ class Bestandliste
             b.nutzer,
             b.anschaffungswert,
             b.st_beleg_nr,
-            to_char(b.anschaffungsdatum, 'DD.MM.YYYY') as anschaffungsdatum, 
+            to_char(b.anschaffungsdatum, 'DD.MM.YYYY') as anschaffungsdatum_s,
             b.zubehoer,
             b.st_inventar_nr,
             b.stb_inventar_nr,
             b.konto,
-            to_char(b.ausgabedatum, 'DD.MM.YYYY') as ausgabedatum, 
-            to_char(b.ruecknahmedatum, 'DD.MM.YYYY') as ruecknahmedatum, 
-            to_char(b.prueftermin1, 'DD.MM.YYYY') as prueftermin1, 
-            to_char(b.prueftermin2, 'DD.MM.YYYY') as prueftermin2, 
+            to_char(b.ausgabedatum, 'DD.MM.YYYY') as ausgabedatum_s,
+            to_char(b.ruecknahmedatum, 'DD.MM.YYYY') as ruecknahmedatum_s,
+            to_char(b.prueftermin1, 'DD.MM.YYYY') as prueftermin1_s,
+            to_char(b.prueftermin2, 'DD.MM.YYYY') as prueftermin2_s,
             substring(b.bemerkung for 50) as bemerkung,
-            b.fluke_nr
-        FROM oc_bdb_bestand b 
+            b.fluke_nr,
+            CASE WHEN now() >= b.prueftermin1 THEN 'red'
+                WHEN (now() + interval '30 days') >= b.prueftermin1 THEN 'yellow'
+                ELSE ''
+            END as prueftermin1_class,
+            CASE WHEN now() >= b.prueftermin2 THEN 'red'
+                WHEN (now() + interval '30 days') >= b.prueftermin2 THEN 'yellow'
+                ELSE ''
+            END as prueftermin2_class
+        FROM oc_bdb_bestand b
             inner join oc_bdb_kategorie k on (b.kategorie=k.id)
         WHERE true";
-        
+
         if (0 < strlen($this->kategorie)) $sql .= ' and (b.kategorie = :kategorie)';
         $sql .= $this->addSuchFeld();
         $sql .= $this->addDatumFeld();
@@ -224,16 +232,14 @@ class Bestandliste
         if (0 < strlen($this->von)) $stmt->bindParam(':von', $this->von);
         if (0 < strlen($this->bis)) $stmt->bindParam(':bis', $this->bis);
         $stmt->execute();
-        while ($zeile = $stmt->fetch()) {
+        while ($zeile = $stmt->fetch())
             $this->echoZeile($zeile);
-        }
 
         $stmt->closeCursor();
     }
 
     private function addSuchFeld()
     {
-        
         if (0 >= strlen($this->suchtext))
             return '';
 
@@ -246,7 +252,7 @@ class Bestandliste
                         )";
 
         foreach (Bestandliste::SuchFeldList as $f)
-            if ($this->suchfeld == $f[0]) 
+            if ($this->suchfeld == $f[0])
                 return " and ".$f[0] . ' ilike :suchtext ';
 
         return '';
@@ -271,7 +277,7 @@ class Bestandliste
             } else
                 return ' and ('.$suchfeld.'>= :von)';
         } else
-            if (0 < strlen($this->bis)) 
+            if (0 < strlen($this->bis))
                 return ' and ('.$suchfeld.'<=:bis)';
             else
                 return '';
@@ -287,42 +293,53 @@ class Bestandliste
                 break;
             }
 
-        if ( "datum" == $selected_sort) 
+        if ( "datum" == $selected_sort)
             foreach (Bestandliste::DatumFeldList as $f)
-                if ($this->datumfeld == $f[0]) 
+                if ($this->datumfeld == $f[0])
                     return ' Order by '.$f[0].',k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
 
-        # Standard oder falscher Paramter
+        # Standard oder falscher Parameter
         return ' Order by k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
     }
 
+    private function getPruefTerminColor($termin_class)
+    {
+        if (0 < strlen($termin_class))
+            return ' style="background-color: '.$termin_class.';"';
+
+        return '';
+    }
 
     private function echoZeile($zeile)
     {
         $params['id'] = $zeile['id'];
+        $params['letzte_kategorie'] = $this->kategorie;
         $edit_url = $this->urlGenerator->linkToRoute('bestand.editor.edit', $params);
 
         echo('<tr>');
         echo('<td>' . $zeile['kategorie_name'] . '</td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['inventar_nr']) . '</td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['serien_nr']) . '</td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['weitere_nr']) . '</td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['bezeichnung']) . '</td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['typenbezeichnung']) . '</td>');
+        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['inventar_nr']) . '</td>');
+        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['serien_nr']) . '</td>');
+        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['weitere_nr']) . '</td>');
+        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['bezeichnung']) . '</td>');
+        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['typenbezeichnung']) . '</td>');
         echo('<td>' . $zeile['lieferant'] . '</td>');
         echo('<td>' . $zeile['standort'] . '</td>');
         echo('<td>' . $zeile['nutzer'] . '</td>');
         echo('<td>' . $zeile['anschaffungswert'] . '</td>');
         echo('<td>' . $zeile['st_beleg_nr'] . '</td>');
-        echo('<td>' . $zeile['anschaffungsdatum'] . '</td>');
+        echo('<td>' . $zeile['anschaffungsdatum_s'] . '</td>');
         echo('<td>' . $zeile['zubehoer'] . '</td>');
         echo('<td>' . $zeile['st_inventar_nr'] . '</td>');
         echo('<td>' . $zeile['stb_inventar_nr'] . '</td>');
         echo('<td>' . $zeile['konto'] . '</td>');
-        echo('<td>' . $zeile['ausgabedatum'] . '</td>');
-        echo('<td>' . $zeile['ruecknahmedatum'] . '</td>');
-        echo('<td>' . $zeile['prueftermin1'] . '</td>');
-        echo('<td>' . $zeile['prueftermin2'] . '</td>');
+        echo('<td>' . $zeile['ausgabedatum_s'] . '</td>');
+        echo('<td>' . $zeile['ruecknahmedatum_s'] . '</td>');
+
+        $color = $this->getPruefTerminColor($zeile['prueftermin1_class']);
+        echo('<td'. $color .'>' . $zeile['prueftermin1_s'] . '</td>');
+        $color = $this->getPruefTerminColor($zeile['prueftermin2_class']);
+        echo('<td'. $color .'>' . $zeile['prueftermin2_s'] . '</td>');
         echo('<td>' . $zeile['bemerkung'] . '</td>');
         echo('<td>' . $zeile['fluke_nr'] . '</td>');
 

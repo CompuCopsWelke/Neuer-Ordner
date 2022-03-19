@@ -1,23 +1,32 @@
-#bestand table {
-	margin-left: 4px;
-	margin-bottom: 4px;
+#bestand_table table {
+    margin-left: 4px;
+    margin-bottom: 4px;
     white-space: normal;
-    line-height: 1.2;
 }
 
-#bestand td {
-	padding-left: 1px;
-	padding-right: 1px;
-	border-right-width: 1px;
-	border-right-style: solid;
+#bestand_table tr {
+    overflow: hidden;
+    height: 45px;
+    white-space: nowrap;
 }
-#bestand th {
-	padding-left: 1px;
-	padding-right: 1px;
-	border-right-width: 1px;
-	border-right-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
+
+#bestand_table td {
+    padding-left: 1px;
+    padding-right: 1px;
+    border-right-width: 1px;
+    border-right-style: solid;
+}
+
+
+#bestand_table thead th {
+    position: sticky;
+    top: 0;
+    padding-left: 1px;
+    padding-right: 1px;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
 }
 
 #bestand tr:nth-child(even) {

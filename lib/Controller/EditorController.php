@@ -30,7 +30,7 @@ class EditorController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function delete($id): RedirectResponse
+    public function delete($id, $letzte_kategorie): RedirectResponse
     {
         $user = \OC::$server->getUserSession()->getUser();
         if (null === $user) {
@@ -59,6 +59,9 @@ class EditorController extends Controller
         }
 
         $urlGenerator = \OC::$server->getURLGenerator();
+
+        if (0 < strlen($letzte_kategorie))
+            $params['kategorie'] = $letzte_kategorie;
         $absoluteUrl = $urlGenerator->linkToRoute('bestand.page.index', $params);
         return new RedirectResponse($absoluteUrl);
     }
@@ -110,7 +113,8 @@ class EditorController extends Controller
         $prueftermin1,
         $prueftermin2,
         $ausgabedatum,
-        $ruecknahmedatum
+        $ruecknahmedatum,
+        $letzte_kategorie
     ): \OCP\AppFramework\Http\RedirectResponse
     {
 
@@ -135,7 +139,7 @@ class EditorController extends Controller
             $id = is_numeric($id) ? intval($id) : 0;
             if (0 >=  $id) $id = null; 
 
-            $anschaffungswert = is_numeric($anschaffungswert) ? intval($anschaffungswert) : 0;
+            $anschaffungswert = is_numeric($anschaffungswert) ? floatval($anschaffungswert) : 0;
             if (0 >= strlen($anschaffungsdatum)) $anschaffungsdatum = null; 
             if (0 >= strlen($ausgabedatum)) $ausgabedatum = null; 
             if (0 >= strlen($ruecknahmedatum)) $ruecknahmedatum = null; 
@@ -210,10 +214,12 @@ class EditorController extends Controller
             $params['prueftermin2'] = $prueftermin2;
             $params['ausgabedatum'] = $ausgabedatum;
             $params['ruecknahmedatum'] = $ruecknahmedatum;
+            $params['letzte_kategorie'] = $letzte_kategorie;
 
             return new RedirectResponse($urlGenerator->linkToRoute('bestand.editor.create', $params));
         }
 
+        $params['kategorie'] = $letzte_kategorie;
         $absoluteUrl = $urlGenerator->linkToRoute('bestand.page.index', $params);
         return new RedirectResponse($absoluteUrl);
     }
@@ -226,12 +232,13 @@ class EditorController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function edit($id, $message): TemplateResponse
+    public function edit($id, $message, $letzte_kategorie): TemplateResponse
     {
         Util::addStyle(Application::APP_ID, 'bestand');
 
         $params['id'] = $id;
         $params['message'] = $message;
+        $params['letzte_kategorie'] = $letzte_kategorie;
         return new TemplateResponse(Application::APP_ID, 'editor', $params);
     }
 
@@ -265,7 +272,8 @@ class EditorController extends Controller
         $prueftermin1,
         $prueftermin2,
         $ausgabedatum,
-        $ruecknahmedatum
+        $ruecknahmedatum,
+        $letzte_kategorie
     ): TemplateResponse
     {
         Util::addStyle(Application::APP_ID, 'bestand');
@@ -294,6 +302,7 @@ class EditorController extends Controller
         $params['prueftermin2'] = $prueftermin2;
         $params['ausgabedatum'] = $ausgabedatum;
         $params['ruecknahmedatum'] = $ruecknahmedatum;
+        $params['letzte_kategorie'] = $letzte_kategorie;
         return new TemplateResponse(Application::APP_ID, 'editor', $params);
     }
 

@@ -11,6 +11,7 @@ $b = new Bestand($_);
 <?php if ($b->isEditable()) { ?>
 <form action="<?php  $b->echoUpdateTeil(); ?>" name="update_bestand" method="post" accept-charset="UTF-8" >
 <input type="hidden" id="id" name="id" value="<?php $b->echoBestandId(); ?>">
+<input type="hidden" id="letzte_kategorie" name="letzte_kategorie" value="<?php $b->echoLetzteKategorie(); ?>">
 <?php } ?>
 
 <table>
