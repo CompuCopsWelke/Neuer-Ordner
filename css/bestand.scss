@@ -15,6 +15,7 @@
     padding-right: 1px;
     border-right-width: 1px;
     border-right-style: solid;
+    word-wrap: break-word;
 }
 
 
@@ -40,21 +41,16 @@
     background-color: #ffff99;
 }
 
-#bestand td:nth-child(6),
-td:nth-child(8),
-td:nth-child(9),
-td:nth-child(10),
-td:nth-child(11)
-{
+#bestand td:nth-child(10) {
     text-align: right;
 }
 
 
 #bestand 
-  td:nth-child(7),
   td:nth-child(13),
+  td:nth-child(21)
 {
-    max-width: 150px;
+    max-width: 200px;
 }
 
 #bestand a {
