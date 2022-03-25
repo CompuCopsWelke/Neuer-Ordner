@@ -122,6 +122,9 @@ class Bestand
             k.name as kategorie_name,
             b.inventar_nr,
             b.serien_nr,
+            b.weitere_nr,
+            b.geheim_nr,
+            b.bezeichnung,
             b.typenbezeichnung,
             b.lieferant,
             b.standort,
@@ -137,7 +140,7 @@ class Bestand
             to_char(b.ruecknahmedatum, 'YYYY-MM-DD') as ruecknahmedatum, 
             to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1, 
             to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2, 
-            substring(b.bemerkung for 50) as bemerkung,
+            b.bemerkung,
             b.fluke_nr
             FROM oc_bdb_bestand b inner join oc_bdb_kategorie k on (b.kategorie = k.id)
             WHERE b.id=:id;";
@@ -318,9 +321,16 @@ class Bestand
         $this->echoTextField('weitere_nr', $this->weitere_nr, 50);
     }
 
+    /**
+     * die Geheimnr wird nur angezeigt wenn der Mitarbeiter Editierrechte hat
+     */
     public function echoGeheim_nr()
     {
-        $this->echoTextField('geheim_nr', $this->geheim_nr, 50);
+        if ($this->editable) {
+            $this->echoTextField('geheim_nr', $this->geheim_nr, 50);
+        } else {
+            echo('<td colspan="2">****</td><td></td>');
+        }
     }
 
     public function echoBezeichnung()
