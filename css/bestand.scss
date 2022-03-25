@@ -1,6 +1,7 @@
 #bestand_table {
     height: 93vw;
-    overflow-y: auto;
+    overflow: auto;
+    overflow-wrap: break-word;
 }
 
 #bestand_table table {
@@ -9,17 +10,11 @@
     white-space: normal;
 }
 
-#bestand_table tr {
-    overflow: hidden;
-    white-space: nowrap;
-}
-
 #bestand_table td {
     padding-left: 1px;
     padding-right: 1px;
     border-right-width: 1px;
     border-right-style: solid;
-    word-wrap: break-word;
     line-height: 1;
 }
 
