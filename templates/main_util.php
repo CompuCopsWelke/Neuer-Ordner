@@ -101,7 +101,7 @@ class Bestandliste
 
     public function echoCreateBestand()
     {
-        $params['kategorie'] = $this->kategorie;
+        $params['letzte_kategorie'] = $this->kategorie;
         $absoluteUrl = $this->urlGenerator->linkToRoute('bestand.editor.create', $params);
 
         echo('<p><a href="' . $absoluteUrl . '">neu</a>');
