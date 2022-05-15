@@ -7,6 +7,8 @@ class Bestandliste
     private $dbh;
     private $urlGenerator;
 
+    private $uid;
+
     private $message;
 
     private $kategorie;
@@ -72,6 +74,7 @@ class Bestandliste
             $this->message = 'no login ????';
             return;
         }
+        $this->uid = $user->getUID();
 
         $this->getDbh();
 
@@ -113,8 +116,12 @@ class Bestandliste
         echo('<select name="kategorie" id="kategorie">');
         echo('<option value="">&lt;alle&gt;</option>');
 
-        $sql = 'SELECT id, name FROM oc_bdb_kategorie ORDER BY 2;';
+        $sql = 'SELECT k.id, name FROM oc_bdb_kategorie k
+            inner join oc_bdb_kategorie_perm p on (p.kategorie=k.id)
+            where (p.write or p.read) and p.uid =:uid
+            ORDER BY 2;';
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':uid', $this->uid);
         $stmt->execute();
 
         while ($content = $stmt->fetch()) {
@@ -218,7 +225,8 @@ class Bestandliste
             END as prueftermin2_class
         FROM oc_bdb_bestand b
             inner join oc_bdb_kategorie k on (b.kategorie=k.id)
-        WHERE true";
+            inner join oc_bdb_kategorie_perm p on (b.kategorie=p.kategorie)
+        WHERE (p.write or p.read) and p.uid = :uid ";
 
         if (0 < strlen($this->kategorie)) $sql .= ' and (b.kategorie = :kategorie)';
         $sql .= $this->addSuchFeld();
@@ -227,6 +235,7 @@ class Bestandliste
         $sql .= $this->addOrderBy();
 
         $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':uid', $this->uid);
         if (0 < strlen($this->kategorie)) $stmt->bindParam(':kategorie', $this->kategorie);
         if (0 < strlen($this->suchtext)) $stmt->bindParam(':suchtext', $this->suchtext);
         if (0 < strlen($this->von)) $stmt->bindParam(':von', $this->von);

@@ -117,10 +117,6 @@ class EditorController extends Controller
         $letzte_kategorie
     ): \OCP\AppFramework\Http\RedirectResponse
     {
-
-
-        // TODO checkKategorie
-
         $dbh = $this->getDbh();
         $params = False;
         $error_msg = '';
@@ -368,21 +364,31 @@ class EditorController extends Controller
     public function showDoc($doc_id)
     {
         $dbh = $this->getDbh();
-        $zeile = False;
         $message = '';
+        $user = \OC::$server->getUserSession()->getUser();
+        if (null === $user) 
+            $message = 'unbekannter Kollege';
 
         $sql = 'Select dateiname, mt.name as mimetype, content
             from oc_bdb_doc d 
             inner join oc_bdb_mimetype mt on (d.mimetype=mt.id)
-            Where d.id=:doc_id;';
+            inner join oc_bdb_bestand b on (b.id=d.bestand)
+            inner join oc_bdb_kategorie_perm p on (p.kategorie=b.kategorie)
+            Where d.id=:doc_id and (p.write or p.read) and p.uid =:uid;';
         $stmt = $dbh->prepare($sql);
+        $stmt->bindValue(':uid', $user->getUID());
+
         $stmt->bindParam(':doc_id', $doc_id);
         try {
             $stmt->execute();
             $stmt->bindColumn('content', $lob, PDO::PARAM_STR);
             $zeile = $stmt->fetch();
-            $r = new DataDownloadResponse($lob, $zeile['dateiname'],
-                $zeile['mimetype']);
+            if (False !== $zeile) {
+                $r = new DataDownloadResponse($lob, $zeile['dateiname'],
+                    $zeile['mimetype']);
+            } else {
+                $message = "Dokument nicht gefunden: $doc_id";
+            }
         } catch (\Exception $e) {
             $message = $e->getMessage();
         }

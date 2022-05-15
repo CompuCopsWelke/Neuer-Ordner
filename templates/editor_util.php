@@ -60,18 +60,19 @@ class Bestand
 
         $this->urlGenerator = \OC::$server->getURLGenerator();
 
+        $this->uid = $user->getUID();
+
         if (0 < $this->id)
             if (!$this->load())
                 $this->id = 0;
 
         if (0 == $this->id) {
             $this->anschaffungsdatum = date('Y-m-d');
+            $this->editable = true;
         }
         if (array_key_exists('message', $params)) 
             $this->message = $params['message'];
 
-        $this->uid = $user->getUID();
-        $this->getPermissions();
 
         if (array_key_exists('inventar_nr', $params)) $this->inventar_nr = $params['inventar_nr'];
         if (array_key_exists('serien_nr', $params)) $this->serien_nr = $params['serien_nr'];
@@ -141,11 +142,14 @@ class Bestand
             to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1, 
             to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2, 
             b.bemerkung,
-            b.fluke_nr
+            b.fluke_nr,
+            p.write
             FROM oc_bdb_bestand b inner join oc_bdb_kategorie k on (b.kategorie = k.id)
-            WHERE b.id=:id;";
+                inner join oc_bdb_kategorie_perm p on (p.kategorie=k.id)
+            WHERE b.id=:id and (p.write or p.read) and p.uid =:uid;";
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':uid', $this->uid);
         $stmt->execute();
         if ($content = $stmt->fetch()) {
             $this->id = $content['id'];
@@ -175,6 +179,7 @@ class Bestand
             $this->prueftermin2 = $content['prueftermin2'];
             $this->ausgabedatum = $content['ausgabedatum'];
             $this->ruecknahmedatum = $content['ruecknahmedatum'];
+            $this->editable = $content['write'];
 
             $back = true;
         }
@@ -183,27 +188,6 @@ class Bestand
         return $back;
     }
 
-    private function getPermissions()
-    {
-        $this->editable = false;
-        $sql = 'SELECT id
-            FROM oc_bdb_kategorie_perm
-            WHERE uid=:uid';
-        if (0 < $this->kategorie)
-            $sql .= ' and kategorie=:kategorie';
-
-        $sql .= ' Limit 1;';
-
-        $stmt = $this->dbh->prepare($sql);
-        $stmt->bindParam(':uid', $this->uid);
-        if (0 < $this->kategorie)
-            $stmt->bindParam(':kategorie', $this->kategorie);
-        $stmt->execute();
-        if ($content = $stmt->fetch())
-            $this->editable = true;
-        
-        $stmt->closeCursor();
-    }
 
     public function echoUpdateTeil()
     {
