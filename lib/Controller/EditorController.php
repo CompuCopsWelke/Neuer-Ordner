@@ -43,7 +43,7 @@ class EditorController extends Controller
             $sql_params = [
                 ':id' => $id,
                 ':logged_in_user' => $user->getUID()
-                 ];
+            ];
             try {
                 $stmt->execute($sql_params);
                 $params = $stmt->fetch();
@@ -133,18 +133,18 @@ class EditorController extends Controller
                     );';
 
             $id = is_numeric($id) ? intval($id) : 0;
-            if (0 >=  $id) $id = null; 
+            if (0 >= $id) $id = null;
 
             $anschaffungswert = is_numeric($anschaffungswert) ? floatval($anschaffungswert) : 0;
-            if (0 >= strlen($anschaffungsdatum)) $anschaffungsdatum = null; 
-            if (0 >= strlen($ausgabedatum)) $ausgabedatum = null; 
-            if (0 >= strlen($ruecknahmedatum)) $ruecknahmedatum = null; 
-            if (0 >= strlen($prueftermin1)) $prueftermin1 = null; 
-            if (0 >= strlen($prueftermin2)) $prueftermin2 = null; 
+            if (0 >= strlen($anschaffungsdatum)) $anschaffungsdatum = null;
+            if (0 >= strlen($ausgabedatum)) $ausgabedatum = null;
+            if (0 >= strlen($ruecknahmedatum)) $ruecknahmedatum = null;
+            if (0 >= strlen($prueftermin1)) $prueftermin1 = null;
+            if (0 >= strlen($prueftermin2)) $prueftermin2 = null;
 
             $stmt = $dbh->prepare($sql);
             $sql_params = [
-                 ':id' => $id,
+                ':id' => $id,
                 ':kategorie' => $kategorie,
                 ':inventar_nr' => $inventar_nr,
                 ':serien_nr' => $serien_nr,
@@ -245,31 +245,31 @@ class EditorController extends Controller
      * @NoCSRFRequired
      **/
     public function create($error_msg,
-        $id,
-        $kategorie,
-        $inventar_nr,
-        $serien_nr,
-        $weitere_nr,
-        $geheim_nr,
-        $bezeichnung,
-        $typenbezeichnung,
-        $lieferant,
-        $standort,
-        $nutzer,
-        $st_beleg_nr,
-        $zubehoer,
-        $st_inventar_nr,
-        $stb_inventar_nr,
-        $konto,
-        $bemerkung,
-        $fluke_nr,
-        $anschaffungswert,
-        $anschaffungsdatum,
-        $prueftermin1,
-        $prueftermin2,
-        $ausgabedatum,
-        $ruecknahmedatum,
-        $letzte_kategorie
+                           $id,
+                           $kategorie,
+                           $inventar_nr,
+                           $serien_nr,
+                           $weitere_nr,
+                           $geheim_nr,
+                           $bezeichnung,
+                           $typenbezeichnung,
+                           $lieferant,
+                           $standort,
+                           $nutzer,
+                           $st_beleg_nr,
+                           $zubehoer,
+                           $st_inventar_nr,
+                           $stb_inventar_nr,
+                           $konto,
+                           $bemerkung,
+                           $fluke_nr,
+                           $anschaffungswert,
+                           $anschaffungsdatum,
+                           $prueftermin1,
+                           $prueftermin2,
+                           $ausgabedatum,
+                           $ruecknahmedatum,
+                           $letzte_kategorie
     ): TemplateResponse
     {
         Util::addStyle(Application::APP_ID, 'bestand');
@@ -322,7 +322,7 @@ class EditorController extends Controller
             unlink($f);
 
             $user = \OC::$server->getUserSession()->getUser();
-            if (null === $user) 
+            if (null === $user)
                 $ret_params['message'] = 'unbekannter Kollege';
             else {
                 $params = False;
@@ -339,7 +339,7 @@ class EditorController extends Controller
                     $stmt->execute();
                     $ret_params = $stmt->fetch();
                     if (False === $ret_params)
-                        $ret_params['message'] = 'unbekannter Kollege: '.$user->getUID();
+                        $ret_params['message'] = 'unbekannter Kollege: ' . $user->getUID();
                     $ret_params['id'] = $bestand_id;
                 } catch (\Exception $e) {
                     $ret_params['message'] = $e->getMessage();
@@ -348,7 +348,7 @@ class EditorController extends Controller
             }
 
         } else
-            $ret_params['message'] = 'Datei fehlerhaft: '. $uploadedFile['error'];
+            $ret_params['message'] = 'Datei fehlerhaft: ' . $uploadedFile['error'];
 
         $urlGenerator = \OC::$server->getURLGenerator();
         $edit_url = $urlGenerator->linkToRoute('bestand.editor.edit', $ret_params);
@@ -366,7 +366,7 @@ class EditorController extends Controller
         $dbh = $this->getDbh();
         $message = '';
         $user = \OC::$server->getUserSession()->getUser();
-        if (null === $user) 
+        if (null === $user)
             $message = 'unbekannter Kollege';
 
         $sql = 'Select dateiname, mt.name as mimetype, content

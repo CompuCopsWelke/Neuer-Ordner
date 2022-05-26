@@ -70,7 +70,7 @@ class Bestand
             $this->anschaffungsdatum = date('Y-m-d');
             $this->editable = true;
         }
-        if (array_key_exists('message', $params)) 
+        if (array_key_exists('message', $params))
             $this->message = $params['message'];
 
 
@@ -245,18 +245,19 @@ class Bestand
 
         while ($content = $stmt->fetch()) {
             $k_id = $content['id'];
-            $selected = ($this->kategorie == $k_id) ? ' selected' : '';  
+            $selected = ($this->kategorie == $k_id) ? ' selected' : '';
             $s = htmlspecialchars($content['name']);
 
-            echo('<option value="'.$k_id.'"'.$selected.'>'.$s.'</option>');
+            echo('<option value="' . $k_id . '"' . $selected . '>' . $s . '</option>');
         }
         $stmt->closeCursor();
         echo('</select>');
     }
 
-    private function echoTextField($name, $value, $length) {
+    private function echoTextField($name, $value, $length)
+    {
         if ($this->editable) {
-            echo('<td colspan="2"><input type="text" name="'.$name.'" id="'.$name.'" maxlength="'.$length.'" value="');
+            echo('<td colspan="2"><input type="text" name="' . $name . '" id="' . $name . '" maxlength="' . $length . '" value="');
             echo($value);
             echo('" /> </td>');
         } else {
@@ -266,9 +267,10 @@ class Bestand
         }
     }
 
-    private function echoTextArea($name, $value, $length) {
+    private function echoTextArea($name, $value, $length)
+    {
         if ($this->editable) {
-            echo('<td colspan="2"><textarea rows="3" maxlength="'.$length.'" name="'.$name.'" id="'.$name.'" style="width:500px">');
+            echo('<td colspan="2"><textarea rows="3" maxlength="' . $length . '" name="' . $name . '" id="' . $name . '" style="width:500px">');
             echo($value);
             echo('</textarea></td>');
         } else {
@@ -278,9 +280,10 @@ class Bestand
         }
     }
 
-    private function echoDatum($name, $value) {
+    private function echoDatum($name, $value)
+    {
         if ($this->editable) {
-            echo('<td><input type="date" name="'.$name.'" id="'.$name.'" value="');
+            echo('<td><input type="date" name="' . $name . '" id="' . $name . '" value="');
             echo($value);
             echo('" /> </td>');
         } else {

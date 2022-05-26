@@ -57,17 +57,17 @@ class Bestandliste
      */
     public function __construct($post_arr)
     {
-        $this->kategorie = array_key_exists('kategorie', $post_arr ) ? $post_arr['kategorie'] : '';
-        $this->suchfeld = array_key_exists( 'suchfeld', $post_arr) ? $post_arr['suchfeld'] : '';
-        $this->suchtext = array_key_exists( 'suchtext', $post_arr) ? $post_arr['suchtext'] : '';
+        $this->kategorie = array_key_exists('kategorie', $post_arr) ? $post_arr['kategorie'] : '';
+        $this->suchfeld = array_key_exists('suchfeld', $post_arr) ? $post_arr['suchfeld'] : '';
+        $this->suchtext = array_key_exists('suchtext', $post_arr) ? $post_arr['suchtext'] : '';
 
-        $this->datumfeld = array_key_exists( 'datumfeld', $post_arr) ? $post_arr['datumfeld'] : '';
-        $this->von = array_key_exists( 'von', $post_arr) ? $post_arr['von'] : '';
-        $this->bis = array_key_exists( 'bis', $post_arr) ? $post_arr['bis'] : '';
+        $this->datumfeld = array_key_exists('datumfeld', $post_arr) ? $post_arr['datumfeld'] : '';
+        $this->von = array_key_exists('von', $post_arr) ? $post_arr['von'] : '';
+        $this->bis = array_key_exists('bis', $post_arr) ? $post_arr['bis'] : '';
 
-        $this->sort = array_key_exists( 'sort', $post_arr) ? $post_arr['sort'] : '';
+        $this->sort = array_key_exists('sort', $post_arr) ? $post_arr['sort'] : '';
 
-        $this->message = array_key_exists( 'message', $post_arr) ? $post_arr['message'] : '';
+        $this->message = array_key_exists('message', $post_arr) ? $post_arr['message'] : '';
 
         $user = \OC::$server->getUserSession()->getUser();
         if (null === $user) {
@@ -94,7 +94,7 @@ class Bestandliste
 
     public function echoMessage()
     {
-        echo('<b>'.$this->message.'</b>');
+        echo('<b>' . $this->message . '</b>');
     }
 
     public function echoGotoIndex()
@@ -126,12 +126,12 @@ class Bestandliste
 
         while ($content = $stmt->fetch()) {
             $id = $content['id'];
-            $s = '<option value="'.$id.'"';
+            $s = '<option value="' . $id . '"';
             if ($this->kategorie == $id) $s .= ' selected';
 
             $n = htmlspecialchars($content['name']);
 
-            echo($s .'>' . $n . '</option>');
+            echo($s . '>' . $n . '</option>');
         }
         $stmt->closeCursor();
         echo('</select>');
@@ -146,7 +146,7 @@ class Bestandliste
             $s = '<option value="' . $f[0] . '"';
             if ($this->suchfeld == $f[0]) $s .= ' selected';
 
-            echo($s. '>' . $f[1] . "</option>\n");
+            echo($s . '>' . $f[1] . "</option>\n");
         }
         echo('</select>');
     }
@@ -161,7 +161,7 @@ class Bestandliste
             $s = '<option value="' . $f[0] . '"';
             if ($this->datumfeld == $f[0]) $s .= ' selected';
 
-            echo($s. '>' . $f[1] . "</option>\n");
+            echo($s . '>' . $f[1] . "</option>\n");
         }
         echo('</select>');
     }
@@ -174,7 +174,7 @@ class Bestandliste
             $s = '<option value="' . $f[0] . '"';
             if ($this->sort == $f[0]) $s .= ' selected';
 
-            echo($s. '>' . $f[1] . "</option>\n");
+            echo($s . '>' . $f[1] . "</option>\n");
         }
         echo('</select>');
     }
@@ -262,7 +262,7 @@ class Bestandliste
 
         foreach (Bestandliste::SuchFeldList as $f)
             if ($this->suchfeld == $f[0])
-                return " and ".$f[0] . ' ilike :suchtext ';
+                return " and " . $f[0] . ' ilike :suchtext ';
 
         return '';
     }
@@ -282,12 +282,12 @@ class Bestandliste
 
         if (0 < strlen($this->von)) {
             if (0 < strlen($this->bis)) {
-                return ' and (('.$suchfeld.'>= :von) and ('.$suchfeld.'<=:bis))';
+                return ' and ((' . $suchfeld . '>= :von) and (' . $suchfeld . '<=:bis))';
             } else
-                return ' and ('.$suchfeld.'>= :von)';
+                return ' and (' . $suchfeld . '>= :von)';
         } else
             if (0 < strlen($this->bis))
-                return ' and ('.$suchfeld.'<=:bis)';
+                return ' and (' . $suchfeld . '<=:bis)';
             else
                 return '';
     }
@@ -302,10 +302,10 @@ class Bestandliste
                 break;
             }
 
-        if ( "datum" == $selected_sort)
+        if ("datum" == $selected_sort)
             foreach (Bestandliste::DatumFeldList as $f)
                 if ($this->datumfeld == $f[0])
-                    return ' Order by '.$f[0].',k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
+                    return ' Order by ' . $f[0] . ',k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
 
         # Standard oder falscher Parameter
         return ' Order by k.name, b.bezeichnung, b.typenbezeichnung, b.inventar_nr, b.serien_nr;';
@@ -314,13 +314,14 @@ class Bestandliste
     private function getPruefTerminColor($termin_class)
     {
         if (0 < strlen($termin_class))
-            return ' style="background-color: '.$termin_class.';"';
+            return ' style="background-color: ' . $termin_class . ';"';
 
         return '';
     }
 
-    private function translateLineBreak2HTML($content) {
-       return str_replace("\n", '<br>', $content);
+    private function translateLineBreak2HTML($content)
+    {
+        return str_replace("\n", '<br>', $content);
     }
 
     private function echoZeile($zeile)
@@ -350,9 +351,9 @@ class Bestandliste
         echo('<td>' . $zeile['ruecknahmedatum_s'] . '</td>');
 
         $color = $this->getPruefTerminColor($zeile['prueftermin1_class']);
-        echo('<td'. $color .'>' . $zeile['prueftermin1_s'] . '</td>');
+        echo('<td' . $color . '>' . $zeile['prueftermin1_s'] . '</td>');
         $color = $this->getPruefTerminColor($zeile['prueftermin2_class']);
-        echo('<td'. $color .'>' . $zeile['prueftermin2_s'] . '</td>');
+        echo('<td' . $color . '>' . $zeile['prueftermin2_s'] . '</td>');
         echo('<td><div style="height:50px; overflow:hidden">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['bemerkung'])) . '</div></td>');
         echo('<td>' . htmlspecialchars($zeile['fluke_nr']) . '</td>');
 
