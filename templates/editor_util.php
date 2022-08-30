@@ -197,7 +197,7 @@ class Bestand
 
     public function echoMessage()
     {
-        echo($this->message);
+        echo(htmlspecialchars($this->message));
     }
 
     public function isEditable()
@@ -227,7 +227,7 @@ class Bestand
         if ($this->editable) {
             $this->selectKategorie();
         } else {
-            echo($this->kategorie_name);
+            echo(htmlspecialchars($this->kategorie_name));
         }
         echo('</td>');
     }
@@ -258,11 +258,11 @@ class Bestand
     {
         if ($this->editable) {
             echo('<td colspan="2"><input type="text" name="' . $name . '" id="' . $name . '" maxlength="' . $length . '" value="');
-            echo($value);
+            echo(htmlspecialchars($value));
             echo('" /> </td>');
         } else {
             echo('<td colspan="2">');
-            echo($value);
+            echo(htmlspecialchars($value));
             echo('</td><td></td>');
         }
     }
@@ -271,11 +271,11 @@ class Bestand
     {
         if ($this->editable) {
             echo('<td colspan="2"><textarea rows="3" maxlength="' . $length . '" name="' . $name . '" id="' . $name . '" style="width:500px">');
-            echo($value);
+            echo(htmlspecialchars($value));
             echo('</textarea></td>');
         } else {
             echo('<td colspan="2">');
-            echo($value);
+            echo(htmlspecialchars($value));
             echo('</td><td>');
         }
     }
