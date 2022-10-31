@@ -17,7 +17,10 @@ class Bestandliste
     private $datumfeld;
     private $von;
     private $bis;
+
     private $sort;
+    private $sort_col;
+    private $sort_direct;
 
     private const SuchFeldList = [
         ['inventar_nr', 'Inventar-Nr'],
@@ -50,6 +53,31 @@ class Bestandliste
         ['datum', 'Datum']
     ];
 
+    private const SortierungColumn = [
+        ['kategorie_name', 'Kategorie'],
+        ['inventar_nr', 'Inventar-Nr'],
+        ['serien_nr', 'Serien-Nr'],
+        ['weitere_nr', 'Weitere Nr'],
+        ['bezeichnung', 'Bezeichnung'],
+        ['typenbezeichnung', 'Typenbezeichnung'],
+        ['lieferant', 'Lieferant'],
+        ['standort', 'Standort'],
+        ['nutzer', 'Nutzer'],
+        ['anschaffungswert', 'Anschaffungswert'],
+        ['st_beleg_nr', 'ST-Beleg-nr'],
+        ['anschaffungsdatum', 'Anschaffungsdatum'],
+        ['zubehoer', 'Zubehör'],
+        ['st_inventar_nr', 'St-inventar-nr'],
+        ['stb_inventar_nr', 'StB-Inventar-Nr'],
+        ['konto', 'Konto'],
+        ['ausgabedatum', 'Ausgabedatum'],
+        ['ruecknahmedatum', 'Rücknahmedatum'],
+        ['prueftermin1', 'Prüftermin1'],
+        ['prueftermin2', 'Prüftermin2'],
+        ['bemerkung', 'Bemerkung'],
+        ['fluke_nr', 'Fluke-Nr']
+    ];
+
 
     /**
      * Bestandliste constructor.
@@ -66,6 +94,8 @@ class Bestandliste
         $this->bis = array_key_exists('bis', $post_arr) ? $post_arr['bis'] : '';
 
         $this->sort = array_key_exists('sort', $post_arr) ? $post_arr['sort'] : '';
+        $this->sort_col = array_key_exists('sort_col', $post_arr) ? $post_arr['sort_col'] : '';
+        $this->sort_direct = array_key_exists('sort_direct', $post_arr) ? $post_arr['sort_direct'] : '';
 
         $this->message = array_key_exists('message', $post_arr) ? $post_arr['message'] : '';
 
@@ -295,6 +325,21 @@ class Bestandliste
 
     private function addOrderBy()
     {
+        $order = '';
+        if ('' != $this->sort_col) {
+            foreach (Bestandliste::SortierungColumn as $f)
+                if ($this->sort_col == $f[0]) {
+                    $order = $f[0];
+                    break;
+                }
+        }
+        if (0 < strlen($order)) {
+            if ('desc' == $this->sort_direct)
+                return 'Order by ' . $order . ' DESC;';
+
+            return 'Order by ' . $order . ';';
+        }
+
         $selected_sort = '';
         foreach (Bestandliste::SortierungList as $f)
             if ($this->sort == $f[0]) {
@@ -364,5 +409,25 @@ class Bestandliste
     public function echoSuchtext()
     {
         echo($this->suchtext);
+    }
+
+    public function showTableHeader()
+    {
+        $header = '';
+        foreach (Bestandliste::SortierungColumn as $f) {
+            $params['sort_col'] = $f[0];
+            if ($f[0] == $this->sort_col && ('desc' != $this->sort_direct)) {
+                $params['sort_direct'] = 'desc';
+                $symbol_up = ' &#8593';
+            } else {
+                $params['sort_direct'] = '';
+                $symbol_up = '';
+            }
+            $sort_url = $this->urlGenerator->linkToRoute('bestand.page.index', $params);
+
+            $header .= '<th><a href="' . $sort_url . '">' . htmlspecialchars($f[1]) . $symbol_up . '</a></th>';
+        }
+
+        echo($header);
     }
 }
