@@ -413,6 +413,16 @@ class Bestandliste
 
     public function showTableHeader()
     {
+        if (0 < strlen($this->kategorie)) $params['kategorie'] = $this->kategorie;
+        if (0 < strlen($this->suchfeld)) $params['suchfeld'] = $this->suchfeld;
+        if (0 < strlen($this->suchtext)) $params['suchtext'] = $this->suchtext;
+
+        if (0 < strlen($this->datumfeld)) $params['datumfeld'] = $this->datumfeld;
+        if (0 < strlen($this->von)) $params['von'] = $this->von;
+        if (0 < strlen($this->bis)) $params['bis'] = $this->bis;
+
+        if (0 < strlen($this->sort)) $params['sort'] = $this->sort;
+
         $header = '';
         foreach (Bestandliste::SortierungColumn as $f) {
             $params['sort_col'] = $f[0];
