@@ -1,5 +1,5 @@
 #bestand_table {
-    height: 93vw;
+    height: 89vh;
     overflow: auto;
     overflow-wrap: break-word;
 }
@@ -20,8 +20,11 @@
 
 
 #bestand_table thead th {
+
     position: sticky;
+    position: -webkit-sticky;
     top: 0;
+    z-index: 2;
     padding-left: 1px;
     padding-right: 1px;
     border-right-width: 1px;
