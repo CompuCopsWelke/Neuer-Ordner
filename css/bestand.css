@@ -1,3 +1,7 @@
+#bestand {
+    background-color: white;
+}
+
 #bestand_table {
     height: 89vh;
     overflow: auto;
