@@ -1,5 +1,13 @@
+:root {
+  --body-container-radius: 0;
+}
+
 #bestand {
     background-color: white;
+}
+
+#bestand div {
+    width: 100%;
 }
 
 #bestand_table {
@@ -21,7 +29,6 @@
     border-right-style: solid;
     line-height: 1;
 }
-
 
 #bestand_table thead th {
 
@@ -83,12 +90,22 @@
     min-height: 20px;
 }
 
+#st_editor {
+    background-color: white;
+    width: 100%;
+}
+
 #st_editor input:not([type="range"]) {
     padding-top: 1px;
     padding-bottom: 1px;
     margin-top: 1px;
     margin-bottom: 1px;
     min-height: 20px;
+    width: 300px;
+}
+
+#st_editor select {
+    width: 300px;
 }
 
 #st_editor a {
