@@ -4,9 +4,12 @@
 
 #bestand {
     background-color: white;
+    font-size: 12px;
+    width: 100%;
 }
 
 #bestand div {
+    background-color: white;
     width: 100%;
 }
 
@@ -88,6 +91,7 @@
     margin-top: 5px;
     margin-bottom: 5px;
     min-height: 20px;
+    font-size: 12px;
 }
 
 #st_editor {
