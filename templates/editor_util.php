@@ -270,7 +270,7 @@ class Bestand
     private function echoTextArea($name, $value, $length)
     {
         if ($this->editable) {
-            echo('<td colspan="2"><textarea rows="3" maxlength="' . $length . '" name="' . $name . '" id="' . $name . '" style="width:500px">');
+            echo('<td colspan="2"><textarea rows="3" maxlength="' . $length . '" name="' . $name . '" id="' . $name . '">');
             echo(htmlspecialchars($value));
             echo('</textarea></td>');
         } else {

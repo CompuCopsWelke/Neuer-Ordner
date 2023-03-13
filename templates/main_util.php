@@ -388,7 +388,7 @@ class Bestandliste
         echo('<td>' . $zeile['anschaffungswert'] . '</td>');
         echo('<td>' . htmlspecialchars($zeile['st_beleg_nr']) . '</td>');
         echo('<td>' . htmlspecialchars($zeile['anschaffungsdatum_s']) . '</td>');
-        echo('<td><div style="height:50px; overflow:hidden">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['zubehoer'])) . '</div></td>');
+        echo('<td><div class="bestand_fix_row">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['zubehoer'])) . '</div></td>');
         echo('<td>' . htmlspecialchars($zeile['st_inventar_nr']) . '</td>');
         echo('<td>' . htmlspecialchars($zeile['stb_inventar_nr']) . '</td>');
         echo('<td>' . htmlspecialchars($zeile['konto']) . '</td>');
@@ -399,7 +399,7 @@ class Bestandliste
         echo('<td' . $color . '>' . $zeile['prueftermin1_s'] . '</td>');
         $color = $this->getPruefTerminColor($zeile['prueftermin2_class']);
         echo('<td' . $color . '>' . $zeile['prueftermin2_s'] . '</td>');
-        echo('<td><div style="height:50px; overflow:hidden">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['bemerkung'])) . '</div></td>');
+        echo('<td><div class="bestand_fix_row">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['bemerkung'])) . '</div></td>');
         echo('<td>' . htmlspecialchars($zeile['fluke_nr']) . '</td>');
 
         echo("</tr>\n");

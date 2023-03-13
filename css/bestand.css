@@ -1,15 +1,16 @@
 :root {
-  --body-container-radius: 0;
+    --body-container-radius: 0;
 }
 
 #bestand {
-    background-color: white;
     font-size: 12px;
+    background-color: white;
     width: 100%;
+    **/
 }
 
 #bestand div {
-    background-color: white;
+    background-color: inherit;
     width: 100%;
 }
 
@@ -34,7 +35,6 @@
 }
 
 #bestand_table thead th {
-
     position: sticky;
     position: -webkit-sticky;
     top: 0;
@@ -50,6 +50,7 @@
 #bestand tr:nth-child(even) {
     background-color: Lightgreen;
 }
+
 #bestand th {
     background-color: white;
 }
@@ -62,21 +63,23 @@
     text-align: right;
 }
 
+div.bestand_fix_row {
+    height: 50px;
+    overflow: hidden;
+}
 
-#bestand 
-  td:nth-child(13),
-  td:nth-child(21)
-{
+#bestand td:nth-child(13),
+#bestand td:nth-child(21) {
     max-width: 200px;
 }
 
 #bestand a {
     color: blue;
 }
+
 #bestand a:hover {
     background-color: #ffff99;
 }
-
 
 #bestand H2 {
     font-size: 14px;
@@ -84,32 +87,43 @@
     margin-bottom: 1px;
 }
 
-#bestand input:not([type="range"]), 
-  button,
-  select
-{
+#bestand input:not([type="range"]),
+#bestand button,
+#bestand select {
     margin-top: 5px;
     margin-bottom: 5px;
     min-height: 20px;
     font-size: 12px;
+    height: 28px;
 }
 
 #st_editor {
+    font-size: 12px;
     background-color: white;
-    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-#st_editor input:not([type="range"]) {
+#st_editor input,
+#st_editor select,
+#st_editor textarea {
+    font-size: 12px;
     padding-top: 1px;
     padding-bottom: 1px;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin-top: 2px;
+    margin-bottom: 2px;
     min-height: 20px;
-    width: 300px;
 }
 
+#st_editor input,
 #st_editor select {
-    width: 300px;
+    height: 28px;
+}
+
+#st_editor input[type="text"],
+#st_editor select,
+#st_editor textarea {
+    width: 500px;
 }
 
 #st_editor a {
