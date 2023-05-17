@@ -1,6 +1,5 @@
 <?php
 /** @var array $_ */
-
 /** @var \OCP\IL10N $l */
 script('bestand', 'main');
 ?>
@@ -14,7 +13,7 @@ script('bestand', 'main');
         Kategorie: <?php $b->selectKategorie(); ?>
 
         <?php $b->selectSuchfeld(); ?>
-        <input type="text" maxlenght="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>"/>
+        <input type="text" maxlength="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>"/>
 
         Datum: <?php $b->selectDatumfeld(); ?>
         <input type="date" name="von" id="von" value="<?php $b->echoVon() ?>"/>
