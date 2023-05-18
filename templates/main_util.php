@@ -377,11 +377,11 @@ class Bestandliste
 
         echo('<tr>');
         echo('<td>' . $zeile['kategorie_name'] . '</td>');
-        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['inventar_nr']) . '</td>');
-        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['serien_nr']) . '</td>');
-        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['weitere_nr']) . '</td>');
-        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['bezeichnung']) . '</td>');
-        echo('<td><a href="' . $edit_url . '"/>' . htmlspecialchars($zeile['typenbezeichnung']) . '</td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['inventar_nr']) . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['serien_nr']) . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['weitere_nr']) . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['bezeichnung']) . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['typenbezeichnung']) . '</a></td>');
         echo('<td>' . htmlspecialchars($zeile['lieferant']) . '</td>');
         echo('<td>' . htmlspecialchars($zeile['standort']) . '</td>');
         echo('<td>' . htmlspecialchars($zeile['nutzer']) . '</td>');

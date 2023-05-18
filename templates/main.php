@@ -13,11 +13,11 @@ script('bestand', 'main');
         Kategorie: <?php $b->selectKategorie(); ?>
 
         <?php $b->selectSuchfeld(); ?>
-        <input type="text" maxlength="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>"/>
+        <input type="text" maxlength="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>">
 
         Datum: <?php $b->selectDatumfeld(); ?>
-        <input type="date" name="von" id="von" value="<?php $b->echoVon() ?>"/>
-        <input type="date" name="bis" id="bis" value="<?php $b->echoBis() ?>"/>
+        <input type="date" name="von" id="von" value="<?php $b->echoVon() ?>">
+        <input type="date" name="bis" id="bis" value="<?php $b->echoBis() ?>">
 
         Sortierung: <?php $b->selectSortierung(); ?>
 
@@ -28,7 +28,7 @@ script('bestand', 'main');
     <?php $b->echoCreateBestand(); ?>
 
     <div id="bestand_table">
-        <table border="1">
+        <table>
             <thead>
             <tr>
                 <?php $b->showTableHeader(); ?>

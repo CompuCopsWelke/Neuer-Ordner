@@ -259,7 +259,7 @@ class Bestand
         if ($this->editable) {
             echo('<td colspan="2"><input type="text" name="' . $name . '" id="' . $name . '" maxlength="' . $length . '" value="');
             echo(htmlspecialchars($value));
-            echo('" /> </td>');
+            echo('"> </td>');
         } else {
             echo('<td colspan="2">');
             echo(htmlspecialchars($value));
@@ -285,11 +285,11 @@ class Bestand
         if ($this->editable) {
             echo('<td><input type="date" name="' . $name . '" id="' . $name . '" value="');
             echo($value);
-            echo('" /> </td>');
+            echo('"> </td><td></td>');
         } else {
             echo('<td colspan="2">');
             echo($value);
-            echo('</td><td>');
+            echo('</td><td></td>');
         }
     }
 
@@ -386,11 +386,11 @@ class Bestand
         if ($this->editable) {
             echo('<td><input type="number" step="0.01" name="anschaffungswert" id="anschaffungswert" style="text-align: right;" value="');
             echo($this->anschaffungswert);
-            echo('" /> </td>');
+            echo('"> </td><td></td>');
         } else {
             echo('<td>');
             echo($this->anschaffungswert);
-            echo('</td>');
+            echo('</td><td></td>');
         }
     }
 

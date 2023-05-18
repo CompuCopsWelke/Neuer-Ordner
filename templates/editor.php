@@ -64,7 +64,7 @@
         </table>
 
         <?php if ($b->isEditable()) { ?>
-        <input type="submit" name="submit" id="submit" value="Speichern"/>
+        <input type="submit" name="submit" id="submit" value="Speichern">
     </form>
 <?php $b->echoDeleteTeil();
 }
@@ -88,9 +88,9 @@ if (0 < $b->getBestandId()) { ?>
             <form action="<?php $b->echoAddDocLink(); ?>" name="add_doc_bestand" method="post"
                   enctype="multipart/form-data">
                 <input type="hidden" id="bestand_id" name="bestand_id" value="<?php $b->echoBestandId(); ?>">
-                Dokumenttitel: <input type="text" name="titel" id="titel" maxlength="255" style="width:400px"/><br>
+                Dokumenttitel: <input type="text" name="titel" id="titel" maxlength="255" style="width:400px"><br>
                 <input type="file" id="datei_document" name="datei_document"><br>
-                <input type="submit" name="submit" id="submit" value="hinzufügen"/>
+                <input type="submit" name="submit_doc" id="submit_doc" value="hinzufügen">
             </form>
             <?php
         } // if ($b->isEditable())
