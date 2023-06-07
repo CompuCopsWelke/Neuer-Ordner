@@ -184,7 +184,7 @@ class Bestandliste
 
     public function selectDatumfeld()
     {
-        echo('<select name="datumfeld">');
+        echo('<select name="datumfeld" id="datumfeld">');
 
         echo('<option value="">&lt;bitte auswählen&gt;</option>');
         foreach (Bestandliste::DatumFeldList as $f) {
@@ -198,7 +198,7 @@ class Bestandliste
 
     public function selectSortierung()
     {
-        echo('<select name="sort">');
+        echo('<select name="sort" id="sort">');
 
         foreach (Bestandliste::SortierungList as $f) {
             $s = '<option value="' . $f[0] . '"';

@@ -16,51 +16,51 @@
 
         <table>
             <tr>
-                <th>Kategorie:</th><?php $b->echoKategorie(); ?></tr>
+                <th><label for="kategorie">Kategorie:</label></th><?php $b->echoKategorie(); ?></tr>
             <tr>
-                <th>Inventar-Nr:</th><?php $b->echoInventar_nr(); ?></tr>
+                <th><label for="inventar_nr">Inventar-Nr:</label></th><?php $b->echoInventar_nr(); ?></tr>
             <tr>
-                <th>Serien-Nr:</th><?php $b->echoSerien_nr(); ?></tr>
+                <th><label for="serien_nr">Serien-Nr:</label></th><?php $b->echoSerien_nr(); ?></tr>
             <tr>
-                <th>weitere Nr:</th><?php $b->echoWeitere_nr(); ?></tr>
+                <th><label for="weitere_nr">weitere Nr:</label></th><?php $b->echoWeitere_nr(); ?></tr>
             <tr>
-                <th>Geheim-Nr:</th><?php $b->echoGeheim_nr(); ?></tr>
+                <th><label for="geheim_nr">Geheim-Nr:</label></th><?php $b->echoGeheim_nr(); ?></tr>
             <tr>
-                <th>Bezeichnung:</th><?php $b->echoBezeichnung(); ?></tr>
+                <th><label for="bezeichnung">Bezeichnung:</label></th><?php $b->echoBezeichnung(); ?></tr>
             <tr>
-                <th>Typenbezeichnung:</th><?php $b->echoTypenbezeichnung(); ?></tr>
+                <th><label for="typenbezeichnung">Typenbezeichnung:</label></th><?php $b->echoTypenbezeichnung(); ?></tr>
             <tr>
-                <th>Lieferant:</th><?php $b->echolieferant(); ?></tr>
+                <th><label for="lieferant">Lieferant:</label></th><?php $b->echolieferant(); ?></tr>
             <tr>
-                <th>Standort:</th><?php $b->echoStandort(); ?></tr>
+                <th><label for="standort">Standort:</label></th><?php $b->echoStandort(); ?></tr>
             <tr>
-                <th>Nutzer:</th><?php $b->echoNutzer(); ?></tr>
+                <th><label for="nutzer">Nutzer:</label></th><?php $b->echoNutzer(); ?></tr>
             <tr>
-                <th>Anschaffungswert:</th><?php $b->echoAnschaffungswert(); ?></tr>
+                <th><label for="anschaffungswert">Anschaffungswert:</label></th><?php $b->echoAnschaffungswert(); ?></tr>
             <tr>
-                <th>ST-Beleg-Nr:</th><?php $b->echoSt_beleg_nr(); ?></tr>
+                <th><label for="st_beleg_nr">ST-Beleg-Nr:</label></th><?php $b->echoSt_beleg_nr(); ?></tr>
             <tr>
-                <th>Anschaffungsdatum:</th><?php $b->echoAnschaffungsdatum(); ?></tr>
+                <th><label for="anschaffungsdatum">Anschaffungsdatum:</label></th><?php $b->echoAnschaffungsdatum(); ?></tr>
             <tr>
-                <th>Zubehör:</th><?php $b->echoZubehoer(); ?></tr>
+                <th><label for="zubehoer">Zubehör:</label></th><?php $b->echoZubehoer(); ?></tr>
             <tr>
-                <th>ST-Inventar-Nr:</th><?php $b->echoSt_inventar_nr(); ?></tr>
+                <th><label for="st_inventar_nr">ST-Inventar-Nr:</label></th><?php $b->echoSt_inventar_nr(); ?></tr>
             <tr>
-                <th>STB-Inventar-Nr:</th><?php $b->echoStb_inventar_nr(); ?></tr>
+                <th><label for="stb_inventar_nr">STB-Inventar-Nr:</label></th><?php $b->echoStb_inventar_nr(); ?></tr>
             <tr>
-                <th>Konto:</th><?php $b->echoKonto(); ?></tr>
+                <th><label for="konto">Konto:</label></th><?php $b->echoKonto(); ?></tr>
             <tr>
-                <th>Ausgabedatum:</th><?php $b->echoAusgabedatum(); ?></tr>
+                <th><label for="ausgabedatum">Ausgabedatum:</label></th><?php $b->echoAusgabedatum(); ?></tr>
             <tr>
-                <th>Rücknahmedatum:</th><?php $b->echoRuecknahmedatum(); ?></tr>
+                <th><label for="ruecknahmedatum">Rücknahmedatum:</label></th><?php $b->echoRuecknahmedatum(); ?></tr>
             <tr>
-                <th>Prüftermin 1:</th><?php $b->echoPrueftermin1(); ?></tr>
+                <th><label for="prueftermin1">Prüftermin 1:</label></th><?php $b->echoPrueftermin1(); ?></tr>
             <tr>
-                <th>Prüftermin 2:</th><?php $b->echoPrueftermin2(); ?></tr>
+                <th><label for="prueftermin2">Prüftermin 2:</label></th><?php $b->echoPrueftermin2(); ?></tr>
             <tr>
-                <th>Bemerkung:</th><?php $b->echoBemerkung(); ?></tr>
+                <th><label for="bemerkung">Bemerkung:</label></th><?php $b->echoBemerkung(); ?></tr>
             <tr>
-                <th>Fluke-Nr:</th><?php $b->echoFluke_nr(); ?></tr>
+                <th><label for="fluke_nr">Fluke-Nr:</label></th><?php $b->echoFluke_nr(); ?></tr>
         </table>
 
         <?php if ($b->isEditable()) { ?>
@@ -88,7 +88,7 @@ if (0 < $b->getBestandId()) { ?>
             <form action="<?php $b->echoAddDocLink(); ?>" name="add_doc_bestand" method="post"
                   enctype="multipart/form-data">
                 <input type="hidden" id="bestand_id" name="bestand_id" value="<?php $b->echoBestandId(); ?>">
-                Dokumenttitel: <input type="text" name="titel" id="titel" maxlength="255" style="width:400px"><br>
+                <label for="titel">Dokumenttitel: </label><input type="text" name="titel" id="titel" maxlength="255" style="width:400px"><br>
                 <input type="file" id="datei_document" name="datei_document"><br>
                 <input type="submit" name="submit_doc" id="submit_doc" value="hinzufügen">
             </form>

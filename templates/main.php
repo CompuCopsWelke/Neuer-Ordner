@@ -10,16 +10,16 @@ script('bestand', 'main');
     $b = new Bestandliste($_);
     ?>
     <form action="<?php $b->echoGotoIndex(); ?>" name="suche" id="suche" method="post">
-        Kategorie: <?php $b->selectKategorie(); ?>
+        <label for="kategorie">Kategorie: </label><?php $b->selectKategorie(); ?>
 
         <?php $b->selectSuchfeld(); ?>
         <input type="text" maxlength="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>">
 
-        Datum: <?php $b->selectDatumfeld(); ?>
+    <label for="datumfeld">Datum: </label><?php $b->selectDatumfeld(); ?>
         <input type="date" name="von" id="von" value="<?php $b->echoVon() ?>">
         <input type="date" name="bis" id="bis" value="<?php $b->echoBis() ?>">
 
-        Sortierung: <?php $b->selectSortierung(); ?>
+     <label for="sort">Sortierung: </label><?php $b->selectSortierung(); ?>
 
         <input type="submit" value="Suche">
     </form>
