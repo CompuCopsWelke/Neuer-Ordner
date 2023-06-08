@@ -28,7 +28,8 @@
             <tr>
                 <th><label for="bezeichnung">Bezeichnung:</label></th><?php $b->echoBezeichnung(); ?></tr>
             <tr>
-                <th><label for="typenbezeichnung">Typenbezeichnung:</label></th><?php $b->echoTypenbezeichnung(); ?></tr>
+                <th><label for="typenbezeichnung">Typenbezeichnung:</label></th><?php $b->echoTypenbezeichnung(); ?>
+            </tr>
             <tr>
                 <th><label for="lieferant">Lieferant:</label></th><?php $b->echolieferant(); ?></tr>
             <tr>
@@ -36,11 +37,13 @@
             <tr>
                 <th><label for="nutzer">Nutzer:</label></th><?php $b->echoNutzer(); ?></tr>
             <tr>
-                <th><label for="anschaffungswert">Anschaffungswert:</label></th><?php $b->echoAnschaffungswert(); ?></tr>
+                <th><label for="anschaffungswert">Anschaffungswert:</label></th><?php $b->echoAnschaffungswert(); ?>
+            </tr>
             <tr>
                 <th><label for="st_beleg_nr">ST-Beleg-Nr:</label></th><?php $b->echoSt_beleg_nr(); ?></tr>
             <tr>
-                <th><label for="anschaffungsdatum">Anschaffungsdatum:</label></th><?php $b->echoAnschaffungsdatum(); ?></tr>
+                <th><label for="anschaffungsdatum">Anschaffungsdatum:</label></th><?php $b->echoAnschaffungsdatum(); ?>
+            </tr>
             <tr>
                 <th><label for="zubehoer">Zubehör:</label></th><?php $b->echoZubehoer(); ?></tr>
             <tr>
@@ -88,7 +91,8 @@ if (0 < $b->getBestandId()) { ?>
             <form action="<?php $b->echoAddDocLink(); ?>" name="add_doc_bestand" method="post"
                   enctype="multipart/form-data">
                 <input type="hidden" id="bestand_id" name="bestand_id" value="<?php $b->echoBestandId(); ?>">
-                <label for="titel">Dokumenttitel: </label><input type="text" name="titel" id="titel" maxlength="255" style="width:400px"><br>
+                <label for="titel">Dokumenttitel: </label><input type="text" name="titel" id="titel" maxlength="255"
+                                                                 style="width:400px"><br>
                 <input type="file" id="datei_document" name="datei_document"><br>
                 <input type="submit" name="submit_doc" id="submit_doc" value="hinzufügen">
             </form>

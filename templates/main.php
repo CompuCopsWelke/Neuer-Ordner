@@ -15,11 +15,11 @@ script('bestand', 'main');
         <?php $b->selectSuchfeld(); ?>
         <input type="text" maxlength="100" name="suchtext" id="suchtext" value="<?php $b->echoSuchtext(); ?>">
 
-    <label for="datumfeld">Datum: </label><?php $b->selectDatumfeld(); ?>
+        <label for="datumfeld">Datum: </label><?php $b->selectDatumfeld(); ?>
         <input type="date" name="von" id="von" value="<?php $b->echoVon() ?>">
         <input type="date" name="bis" id="bis" value="<?php $b->echoBis() ?>">
 
-     <label for="sort">Sortierung: </label><?php $b->selectSortierung(); ?>
+        <label for="sort">Sortierung: </label><?php $b->selectSortierung(); ?>
 
         <input type="submit" value="Suche">
     </form>
