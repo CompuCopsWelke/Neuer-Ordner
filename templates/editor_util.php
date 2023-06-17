@@ -234,7 +234,7 @@ class Bestand
 
     public function selectKategorie()
     {
-        echo('<select name="kategorie" id="kategorie">');
+        echo('<select name="kategorie" id="kategorie" autofocus>');
         $sql = 'SELECT k.id, k.name 
             FROM oc_bdb_kategorie k inner join oc_bdb_kategorie_perm p on (k.id=p.kategorie)
             WHERE p.uid=:uid 
