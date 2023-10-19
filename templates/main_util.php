@@ -377,21 +377,21 @@ class Bestandliste
 
         echo('<tr>');
         echo('<td>' . $zeile['kategorie_name'] . '</td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['inventar_nr']) . '</a></td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['serien_nr']) . '</a></td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['weitere_nr']) . '</a></td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['bezeichnung']) . '</a></td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['typenbezeichnung']) . '</a></td>');
-        echo('<td>' . htmlspecialchars($zeile['lieferant']) . '</td>');
-        echo('<td>' . htmlspecialchars($zeile['standort']) . '</td>');
-        echo('<td>' . htmlspecialchars($zeile['nutzer']) . '</td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['inventar_nr'] ?? '') . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['serien_nr'] ?? '') . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['weitere_nr'] ?? '') . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['bezeichnung'] ?? '') . '</a></td>');
+        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['typenbezeichnung'] ?? '') . '</a></td>');
+        echo('<td>' . htmlspecialchars($zeile['lieferant'] ?? '') . '</td>');
+        echo('<td>' . htmlspecialchars($zeile['standort'] ?? '') . '</td>');
+        echo('<td>' . htmlspecialchars($zeile['nutzer'] ?? '') . '</td>');
         echo('<td>' . $zeile['anschaffungswert'] . '</td>');
-        echo('<td>' . htmlspecialchars($zeile['st_beleg_nr']) . '</td>');
-        echo('<td>' . htmlspecialchars($zeile['anschaffungsdatum_s']) . '</td>');
-        echo('<td><div class="bestand_fix_row">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['zubehoer'])) . '</div></td>');
-        echo('<td>' . htmlspecialchars($zeile['st_inventar_nr']) . '</td>');
-        echo('<td>' . htmlspecialchars($zeile['stb_inventar_nr']) . '</td>');
-        echo('<td>' . htmlspecialchars($zeile['konto']) . '</td>');
+        echo('<td>' . htmlspecialchars($zeile['st_beleg_nr'] ?? '') . '</td>');
+        echo('<td>' . htmlspecialchars($zeile['anschaffungsdatum_s'] ?? '') . '</td>');
+        echo('<td><div class="bestand_fix_row">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['zubehoer'] ?? '')) . '</div></td>');
+        echo('<td>' . htmlspecialchars($zeile['st_inventar_nr'] ?? '') . '</td>');
+        echo('<td>' . htmlspecialchars($zeile['stb_inventar_nr'] ?? '') . '</td>');
+        echo('<td>' . htmlspecialchars($zeile['konto'] ?? '') . '</td>');
         echo('<td>' . $zeile['ausgabedatum_s'] . '</td>');
         echo('<td>' . $zeile['ruecknahmedatum_s'] . '</td>');
 
@@ -399,8 +399,8 @@ class Bestandliste
         echo('<td' . $color . '>' . $zeile['prueftermin1_s'] . '</td>');
         $color = $this->getPruefTerminColor($zeile['prueftermin2_class']);
         echo('<td' . $color . '>' . $zeile['prueftermin2_s'] . '</td>');
-        echo('<td><div class="bestand_fix_row">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['bemerkung'])) . '</div></td>');
-        echo('<td>' . htmlspecialchars($zeile['fluke_nr']) . '</td>');
+        echo('<td><div class="bestand_fix_row">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['bemerkung'] ?? '')) . '</div></td>');
+        echo('<td>' . htmlspecialchars($zeile['fluke_nr'] ?? '') . '</td>');
 
         echo("</tr>\n");
     }

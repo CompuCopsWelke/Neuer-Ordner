@@ -60,7 +60,7 @@ class EditorController extends Controller
 
         $urlGenerator = \OC::$server->getURLGenerator();
 
-        if (0 < strlen($letzte_kategorie))
+        if (0 < strlen($letzte_kategorie ?? ''))
             $params['kategorie'] = $letzte_kategorie;
         $absoluteUrl = $urlGenerator->linkToRoute('bestand.page.index', $params);
         return new RedirectResponse($absoluteUrl);

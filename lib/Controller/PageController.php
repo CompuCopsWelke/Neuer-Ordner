@@ -31,16 +31,16 @@ class PageController extends Controller
     public function index($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis, $sort, $sort_col, $sort_direct, $message): TemplateResponse
     {
         $params = [];
-        if (0 < strlen($kategorie)) $params['kategorie'] = $kategorie;
-        if (0 < strlen($suchfeld)) $params['suchfeld'] = $suchfeld;
-        if (0 < strlen($suchtext)) $params['suchtext'] = $suchtext;
-        if (0 < strlen($datumfeld)) $params['datumfeld'] = $datumfeld;
-        if (0 < strlen($von)) $params['von'] = $von;
-        if (0 < strlen($bis)) $params['bis'] = $bis;
-        if (0 < strlen($sort)) $params['sort'] = $sort;
-        if (0 < strlen($sort_col)) $params['sort_col'] = $sort_col;
-        if (0 < strlen($sort_direct)) $params['sort_direct'] = $sort_direct;
-        if (0 < strlen($message)) $params['message'] = $message;
+        if (0 < strlen($kategorie ?? '')) $params['kategorie'] = $kategorie;
+        if (0 < strlen($suchfeld ?? '')) $params['suchfeld'] = $suchfeld;
+        if (0 < strlen($suchtext ?? '')) $params['suchtext'] = $suchtext;
+        if (0 < strlen($datumfeld ?? '')) $params['datumfeld'] = $datumfeld;
+        if (0 < strlen($von ?? '')) $params['von'] = $von;
+        if (0 < strlen($bis ?? '')) $params['bis'] = $bis;
+        if (0 < strlen($sort ?? '')) $params['sort'] = $sort;
+        if (0 < strlen($sort_col ?? '')) $params['sort_col'] = $sort_col;
+        if (0 < strlen($sort_direct ?? '')) $params['sort_direct'] = $sort_direct;
+        if (0 < strlen($message ?? '')) $params['message'] = $message;
 
         Util::addStyle(Application::APP_ID, 'bestand');
         return new TemplateResponse(Application::APP_ID, 'main', $params);
@@ -58,13 +58,13 @@ class PageController extends Controller
     public function indexPost($kategorie, $suchfeld, $suchtext, $datumfeld, $von, $bis, $sort): \OCP\AppFramework\Http\Response
     {
         $params = [];
-        if (0 < strlen($kategorie)) $params['kategorie'] = $kategorie;
-        if (0 < strlen($suchfeld)) $params['suchfeld'] = $suchfeld;
-        if (0 < strlen($suchtext)) $params['suchtext'] = $suchtext;
-        if (0 < strlen($datumfeld)) $params['datumfeld'] = $datumfeld;
-        if (0 < strlen($von)) $params['von'] = $von;
-        if (0 < strlen($bis)) $params['bis'] = $bis;
-        if (0 < strlen($sort)) $params['sort'] = $sort;
+        if (0 < strlen($kategorie ?? '')) $params['kategorie'] = $kategorie;
+        if (0 < strlen($suchfeld ?? '')) $params['suchfeld'] = $suchfeld;
+        if (0 < strlen($suchtext ?? '')) $params['suchtext'] = $suchtext;
+        if (0 < strlen($datumfeld ?? '')) $params['datumfeld'] = $datumfeld;
+        if (0 < strlen($von ?? '')) $params['von'] = $von;
+        if (0 < strlen($bis ?? '')) $params['bis'] = $bis;
+        if (0 < strlen($sort ?? '')) $params['sort'] = $sort;
 
         if (0 < count($params)) {
             $urlGenerator = \OC::$server->getURLGenerator();

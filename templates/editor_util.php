@@ -71,7 +71,7 @@ class Bestand
             $this->editable = true;
         }
         if (array_key_exists('message', $params))
-            $this->message = $params['message'];
+            $this->message = $params['message'] ?? '';
 
 
         if (array_key_exists('inventar_nr', $params)) $this->inventar_nr = $params['inventar_nr'];
@@ -258,11 +258,11 @@ class Bestand
     {
         if ($this->editable) {
             echo('<td colspan="2"><input type="text" name="' . $name . '" id="' . $name . '" maxlength="' . $length . '" value="');
-            echo(htmlspecialchars($value));
+            echo(htmlspecialchars($value ?? ''));
             echo('"> </td>');
         } else {
             echo('<td colspan="2">');
-            echo(htmlspecialchars($value));
+            echo(htmlspecialchars($value ?? ''));
             echo('</td><td></td>');
         }
     }
@@ -271,11 +271,11 @@ class Bestand
     {
         if ($this->editable) {
             echo('<td colspan="2"><textarea rows="3" maxlength="' . $length . '" name="' . $name . '" id="' . $name . '">');
-            echo(htmlspecialchars($value));
+            echo(htmlspecialchars($value ?? ''));
             echo('</textarea></td>');
         } else {
             echo('<td colspan="2">');
-            echo(htmlspecialchars($value));
+            echo(htmlspecialchars($value ?? ''));
             echo('</td><td>');
         }
     }
