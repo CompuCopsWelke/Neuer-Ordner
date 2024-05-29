@@ -7,8 +7,8 @@ script('bestand', 'main');
 <div id="bestand">
     <?php
     require 'main_util.php';
-    $b = new Bestandliste($_);
-    ?>
+$b = new Bestandliste($_);
+?>
     <form action="<?php $b->echoGotoIndex(); ?>" name="suche" id="suche" method="post">
         <label for="kategorie">Kategorie: </label><?php $b->selectKategorie(); ?>
 

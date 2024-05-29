@@ -31,13 +31,14 @@ class Bestandliste
         ['lieferant', 'Lieferant'],
         ['standort', 'Standort'],
         ['nutzer', 'Nutzer'],
+        ['einsatzort', 'Einsatzort'],
         ['st_beleg_nr', 'ST-Beleg-Nr'],
         ['zubehoer', 'Zubehör'],
         ['st_inventar_nr', 'ST-Inventar-Nr'],
         ['stb_inventar_nr', 'STB-Inventar-Nr'],
         ['konto', 'Konto'],
         ['bemerkung', 'Bemerkung'],
-        ['fluke_nr', 'Fluke-Nr']
+        ['fluke_nr', 'Fluke-Nr'],
     ];
 
     private const DatumFeldList = [
@@ -45,12 +46,12 @@ class Bestandliste
         ['ausgabedatum', 'Ausgabedatum'],
         ['ruecknahmedatum', 'Rücknahmedatum'],
         ['prueftermin1', 'Prüftermin1'],
-        ['prueftermin2', 'Prüftermin2']
+        ['prueftermin2', 'Prüftermin2'],
     ];
 
     private const SortierungList = [
         ['standard', 'Standard'],
-        ['datum', 'Datum']
+        ['datum', 'Datum'],
     ];
 
     private const SortierungColumn = [
@@ -63,6 +64,7 @@ class Bestandliste
         ['lieferant', 'Lieferant'],
         ['standort', 'Standort'],
         ['nutzer', 'Nutzer'],
+        ['einsatzort', 'Einsatzort'],
         ['anschaffungswert', 'Anschaffungswert'],
         ['st_beleg_nr', 'ST-Beleg-nr'],
         ['anschaffungsdatum', 'Anschaffungsdatum'],
@@ -75,7 +77,7 @@ class Bestandliste
         ['prueftermin1', 'Prüftermin1'],
         ['prueftermin2', 'Prüftermin2'],
         ['bemerkung', 'Bemerkung'],
-        ['fluke_nr', 'Fluke-Nr']
+        ['fluke_nr', 'Fluke-Nr'],
     ];
 
 
@@ -232,6 +234,7 @@ class Bestandliste
             b.lieferant,
             b.standort,
             b.nutzer,
+            b.einsatzort,
             b.anschaffungswert,
             b.st_beleg_nr,
             to_char(b.anschaffungsdatum, 'DD.MM.YYYY') as anschaffungsdatum_s,
@@ -315,11 +318,10 @@ class Bestandliste
                 return ' and ((' . $suchfeld . '>= :von) and (' . $suchfeld . '<=:bis))';
             } else
                 return ' and (' . $suchfeld . '>= :von)';
-        } else
-            if (0 < strlen($this->bis))
-                return ' and (' . $suchfeld . '<=:bis)';
-            else
-                return '';
+        } elseif (0 < strlen($this->bis))
+            return ' and (' . $suchfeld . '<=:bis)';
+        else
+            return '';
     }
 
 
@@ -377,7 +379,7 @@ class Bestandliste
 
         echo('<tr>');
         echo('<td>' . $zeile['kategorie_name'] . '</td>');
-        echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['inventar_nr'] ?? '') . '</a></td>');
+        echo('<td><a href="' . $edit_url . '"><div>' . htmlspecialchars($zeile['inventar_nr'] ?? '') . '</div></a></td>');
         echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['serien_nr'] ?? '') . '</a></td>');
         echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['weitere_nr'] ?? '') . '</a></td>');
         echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['bezeichnung'] ?? '') . '</a></td>');
@@ -385,6 +387,7 @@ class Bestandliste
         echo('<td>' . htmlspecialchars($zeile['lieferant'] ?? '') . '</td>');
         echo('<td>' . htmlspecialchars($zeile['standort'] ?? '') . '</td>');
         echo('<td>' . htmlspecialchars($zeile['nutzer'] ?? '') . '</td>');
+        echo('<td>' . htmlspecialchars($zeile['einsatzort'] ?? '') . '</td>');
         echo('<td>' . $zeile['anschaffungswert'] . '</td>');
         echo('<td>' . htmlspecialchars($zeile['st_beleg_nr'] ?? '') . '</td>');
         echo('<td>' . htmlspecialchars($zeile['anschaffungsdatum_s'] ?? '') . '</td>');

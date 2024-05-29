@@ -8,7 +8,7 @@ class Bestand
     private $uid;
 
     private $message = '';
-    private $editable = False;
+    private $editable = false;
 
     private $id;
 
@@ -23,6 +23,7 @@ class Bestand
     private $lieferant;
     private $standort;
     private $nutzer;
+    private $einsatzort;
     private $st_beleg_nr;
     private $zubehoer;
     private $st_inventar_nr;
@@ -83,6 +84,7 @@ class Bestand
         if (array_key_exists('lieferant', $params)) $this->lieferant = $params['lieferant'];
         if (array_key_exists('standort', $params)) $this->standort = $params['standort'];
         if (array_key_exists('nutzer', $params)) $this->nutzer = $params['nutzer'];
+        if (array_key_exists('einsatzort', $params)) $this->einsatzort = $params['einsatzort'];
         if (array_key_exists('st_beleg_nr', $params)) $this->st_beleg_nr = $params['st_beleg_nr'];
         if (array_key_exists('zubehoer', $params)) $this->zubehoer = $params['zubehoer'];
         if (array_key_exists('st_inventar_nr', $params)) $this->st_inventar_nr = $params['st_inventar_nr'];
@@ -130,6 +132,7 @@ class Bestand
             b.lieferant,
             b.standort,
             b.nutzer,
+            b.einsatzort,
             b.anschaffungswert,
             b.st_beleg_nr,
             to_char(b.anschaffungsdatum, 'YYYY-MM-DD') as anschaffungsdatum, 
@@ -166,6 +169,7 @@ class Bestand
             $this->lieferant = $content['lieferant'];
             $this->standort = $content['standort'];
             $this->nutzer = $content['nutzer'];
+            $this->einsatzort = $content['einsatzort'];
             $this->st_beleg_nr = $content['st_beleg_nr'];
             $this->zubehoer = $content['zubehoer'];
             $this->st_inventar_nr = $content['st_inventar_nr'];
@@ -345,6 +349,10 @@ class Bestand
     {
         $this->echoTextField('nutzer', $this->nutzer, 100);
     }
+    public function echoEinsatzort()
+    {
+        $this->echoTextField('einsatzort', $this->einsatzort, 100);
+    }
 
     public function echoSt_beleg_nr()
     {
@@ -461,5 +469,26 @@ class Bestand
     public function echoAddDocLink()
     {
         echo($this->urlGenerator->linkToRoute('bestand.editor.add_doc'));
+    }
+
+    public function echoLeihHistorie()
+    {
+        $sql = "SELECT to_char(ausgabedatum, 'DD.MM.YYYY') as ausgabedatum, 
+            to_char(ruecknahmedatum, 'DD.MM.YYYY') as ruecknahmedatum, 
+            nutzer, einsatzort 
+            FROM oc_bdb_bestand_leihhistorie WHERE bestand=:id 
+            ORDER BY ausgabedatum DESC, ruecknahmedatum DESC, nutzer, einsatzort;";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        if ($stmt->execute())
+            while ($content = $stmt->fetch()) {
+                echo('<tr>');
+                echo('<td>' . $content['ausgabedatum'] . '</td>');
+                echo('<td>' . $content['ruecknahmedatum'] . '</td>');
+                echo('<td>' . htmlspecialchars($content['nutzer']) . '</td>');
+                echo('<td>' . htmlspecialchars($content['einsatzort']) . '</td>');
+                echo('</tr>');
+            }
+        $stmt->closeCursor();
     }
 }

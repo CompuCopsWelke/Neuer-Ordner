@@ -1,5 +1,4 @@
 <div id="st_editor">
-
     <?php
     require 'editor_util.php';
     $b = new Bestand($_);
@@ -37,6 +36,8 @@
             <tr>
                 <th><label for="nutzer">Nutzer:</label></th><?php $b->echoNutzer(); ?></tr>
             <tr>
+                <th><label for="einsatzort">Einsatzort:</label></th><?php $b->echoEinsatzort(); ?></tr>
+            <tr>
                 <th><label for="anschaffungswert">Anschaffungswert:</label></th><?php $b->echoAnschaffungswert(); ?>
             </tr>
             <tr>
@@ -70,9 +71,9 @@
         <input type="submit" name="submit" id="submit" value="Speichern">
     </form>
 <?php $b->echoDeleteTeil();
-}
-$b->echoCreateTeil();
-if (0 < $b->getBestandId()) { ?>
+        }
+    $b->echoCreateTeil();
+    if (0 < $b->getBestandId()) { ?>
     <br>
     <div id="bestand">
         <hr>
@@ -96,9 +97,20 @@ if (0 < $b->getBestandId()) { ?>
                 <input type="file" id="datei_document" name="datei_document"><br>
                 <input type="submit" name="submit_doc" id="submit_doc" value="hinzufügen">
             </form>
-            <?php
-        } // if ($b->isEditable())
-        } // if (0 < $b->getBestandId())
-        ?>
+        <?php } // if ($b->isEditable())?>
+
+        <hr>
+        <H3>Ausgabe-Historie</H3>
+        <table>
+            <tr>
+                <th>Ausgabe</th>
+                <th>Rückname</th>
+                <th>Nutzer</th>
+                <th>Einsatzort</th>
+            </tr>
+            <?php $b->echoLeihHistorie(); ?>
+        </table>
+
     </div>
+<?php } // if (0 < $b->getBestandId())?>
 </div>

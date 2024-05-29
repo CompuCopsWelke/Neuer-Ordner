@@ -13,7 +13,6 @@ use PDO;
 
 class EditorController extends Controller
 {
-
     /**
      * EditorController constructor.
      * @param IRequest $request
@@ -39,10 +38,10 @@ class EditorController extends Controller
         } else {
             $sql = 'Select deleteBestand(:id, :logged_in_user);';
             $stmt = $this->getDbh()->prepare($sql);
-            $params = False;
+            $params = false;
             $sql_params = [
                 ':id' => $id,
-                ':logged_in_user' => $user->getUID()
+                ':logged_in_user' => $user->getUID(),
             ];
             try {
                 $stmt->execute($sql_params);
@@ -52,7 +51,7 @@ class EditorController extends Controller
                 $params['message'] = $e->getMessage();
             }
             $stmt->closeCursor();
-            if (False === $params) {
+            if (false === $params) {
                 $params = [];
                 $params['error_msg'] = 'nix geloescht.';
             }
@@ -101,6 +100,7 @@ class EditorController extends Controller
         $lieferant,
         $standort,
         $nutzer,
+        $einsatzort,
         $st_beleg_nr,
         $zubehoer,
         $st_inventar_nr,
@@ -115,10 +115,9 @@ class EditorController extends Controller
         $ausgabedatum,
         $ruecknahmedatum,
         $letzte_kategorie
-    ): \OCP\AppFramework\Http\RedirectResponse
-    {
+    ): \OCP\AppFramework\Http\RedirectResponse {
         $dbh = $this->getDbh();
-        $params = False;
+        $params = false;
         $error_msg = '';
         $user = \OC::$server->getUserSession()->getUser();
         if (null === $user) $error_msg = 'unbekannter Kollege';
@@ -126,7 +125,7 @@ class EditorController extends Controller
         if (0 === strlen($error_msg)) {
             $sql = 'Select * from updateBestand(:id,
                     :kategorie, :inventar_nr, :serien_nr, :weitere_nr, :geheim_nr,
-                    :bezeichnung, :typenbezeichnung, :lieferant, :standort, :nutzer, :st_beleg_nr,
+                    :bezeichnung, :typenbezeichnung, :lieferant, :standort, :nutzer, :einsatzort, :st_beleg_nr,
                     :zubehoer, :st_inventar_nr, :stb_inventar_nr, :konto, :bemerkung, :fluke_nr,
                     :anschaffungswert, :anschaffungsdatum, :prueftermin1, :prueftermin2,
                     :ausgabedatum, :ruecknahmedatum, :logged_in_user
@@ -155,6 +154,7 @@ class EditorController extends Controller
                 ':lieferant' => $lieferant,
                 ':standort' => $standort,
                 ':nutzer' => $nutzer,
+                ':einsatzort' => $einsatzort,
                 ':st_beleg_nr' => $st_beleg_nr,
                 ':zubehoer' => $zubehoer,
                 ':st_inventar_nr' => $st_inventar_nr,
@@ -169,7 +169,7 @@ class EditorController extends Controller
                 ':ausgabedatum' => $ausgabedatum,
                 ':ruecknahmedatum' => $ruecknahmedatum,
 
-                ':logged_in_user' => $user->getUID()
+                ':logged_in_user' => $user->getUID(),
             ];
 
             try {
@@ -185,7 +185,7 @@ class EditorController extends Controller
             $params['message'] = $error_msg;
 
         $urlGenerator = \OC::$server->getURLGenerator();
-        if (False === $params) {
+        if (false === $params) {
             $params = [];
             $params['kategorie'] = $kategorie;
             $params['inventar_nr'] = $inventar_nr;
@@ -197,6 +197,7 @@ class EditorController extends Controller
             $params['lieferant'] = $lieferant;
             $params['standort'] = $standort;
             $params['nutzer'] = $nutzer;
+            $params['einsatzort'] = $einsatzort;
             $params['st_beleg_nr'] = $st_beleg_nr;
             $params['zubehoer'] = $zubehoer;
             $params['st_inventar_nr'] = $st_inventar_nr;
@@ -244,34 +245,35 @@ class EditorController extends Controller
      * @NoAdminRequired
      * @NoCSRFRequired
      **/
-    public function create($error_msg,
-                           $id,
-                           $kategorie,
-                           $inventar_nr,
-                           $serien_nr,
-                           $weitere_nr,
-                           $geheim_nr,
-                           $bezeichnung,
-                           $typenbezeichnung,
-                           $lieferant,
-                           $standort,
-                           $nutzer,
-                           $st_beleg_nr,
-                           $zubehoer,
-                           $st_inventar_nr,
-                           $stb_inventar_nr,
-                           $konto,
-                           $bemerkung,
-                           $fluke_nr,
-                           $anschaffungswert,
-                           $anschaffungsdatum,
-                           $prueftermin1,
-                           $prueftermin2,
-                           $ausgabedatum,
-                           $ruecknahmedatum,
-                           $letzte_kategorie
-    ): TemplateResponse
-    {
+    public function create(
+        $error_msg,
+        $id,
+        $kategorie,
+        $inventar_nr,
+        $serien_nr,
+        $weitere_nr,
+        $geheim_nr,
+        $bezeichnung,
+        $typenbezeichnung,
+        $lieferant,
+        $standort,
+        $nutzer,
+        $einsatzort,
+        $st_beleg_nr,
+        $zubehoer,
+        $st_inventar_nr,
+        $stb_inventar_nr,
+        $konto,
+        $bemerkung,
+        $fluke_nr,
+        $anschaffungswert,
+        $anschaffungsdatum,
+        $prueftermin1,
+        $prueftermin2,
+        $ausgabedatum,
+        $ruecknahmedatum,
+        $letzte_kategorie
+    ): TemplateResponse {
         Util::addStyle(Application::APP_ID, 'bestand');
 
         $params['error_msg'] = $error_msg;
@@ -285,6 +287,7 @@ class EditorController extends Controller
         $params['lieferant'] = $lieferant;
         $params['standort'] = $standort;
         $params['nutzer'] = $nutzer;
+        $params['einsatzort'] = $einsatzort;
         $params['st_beleg_nr'] = $st_beleg_nr;
         $params['zubehoer'] = $zubehoer;
         $params['st_inventar_nr'] = $st_inventar_nr;
@@ -325,7 +328,7 @@ class EditorController extends Controller
             if (null === $user)
                 $ret_params['message'] = 'unbekannter Kollege';
             else {
-                $params = False;
+                $params = false;
                 $sql = 'Select * from addDoc2Bestand(:bestand_id, :titel, :dateiname, :content, :mimetype, :logged_in_user);';
                 $dbh = $this->getDbh();
                 $stmt = $dbh->prepare($sql);
@@ -338,7 +341,7 @@ class EditorController extends Controller
                 try {
                     $stmt->execute();
                     $ret_params = $stmt->fetch();
-                    if (False === $ret_params)
+                    if (false === $ret_params)
                         $ret_params['message'] = 'unbekannter Kollege: ' . $user->getUID();
                     $ret_params['id'] = $bestand_id;
                 } catch (\Exception $e) {
@@ -383,9 +386,12 @@ class EditorController extends Controller
             $stmt->execute();
             $stmt->bindColumn('content', $lob, PDO::PARAM_STR);
             $zeile = $stmt->fetch();
-            if (False !== $zeile) {
-                $r = new DataDownloadResponse($lob, $zeile['dateiname'],
-                    $zeile['mimetype']);
+            if (false !== $zeile) {
+                $r = new DataDownloadResponse(
+                    $lob,
+                    $zeile['dateiname'],
+                    $zeile['mimetype']
+                );
             } else {
                 $message = "Dokument nicht gefunden: $doc_id";
             }
@@ -394,7 +400,7 @@ class EditorController extends Controller
         }
         $stmt->closeCursor();
 
-        if (False === $zeile) {
+        if (false === $zeile) {
             $params['message'] = $message;
             $urlGenerator = \OC::$server->getURLGenerator();
             $url = $urlGenerator->linkToRoute('bestand.page.index', $params);
@@ -415,7 +421,7 @@ class EditorController extends Controller
         $params = [];
 
         $dbh = $this->getDbh();
-        $params = False;
+        $params = false;
         $message = '';
         $user = \OC::$server->getUserSession()->getUser();
         if (null === $user) $message = 'unbekannter Kollege';
@@ -433,7 +439,7 @@ class EditorController extends Controller
         }
         $stmt->closeCursor();
 
-        if (False === $params)
+        if (false === $params)
             $params['message'] = $message;
 
         $urlGenerator = \OC::$server->getURLGenerator();
