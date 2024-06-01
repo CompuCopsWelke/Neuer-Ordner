@@ -373,11 +373,15 @@ class Bestandliste
 
     private function echoZeile($zeile)
     {
+        $id_add = '';
         $params['id'] = $zeile['id'];
-        $params['letzte_kategorie'] = $this->kategorie;
+        if (0 < strlen($this->kategorie)) {
+            $params['letzte_kategorie'] = $this->kategorie;
+            $id_add = "&amp;letzte_kategorie=".$this->kategorie;
+        }
         $edit_url = $this->urlGenerator->linkToRoute('bestand.editor.edit', $params);
 
-        echo('<tr>');
+        echo('<tr class="bestand_row" id="'.$zeile['id'].$id_add.'">');
         echo('<td>' . $zeile['kategorie_name'] . '</td>');
         echo('<td><a href="' . $edit_url . '"><div>' . htmlspecialchars($zeile['inventar_nr'] ?? '') . '</div></a></td>');
         echo('<td><a href="' . $edit_url . '">' . htmlspecialchars($zeile['serien_nr'] ?? '') . '</a></td>');
