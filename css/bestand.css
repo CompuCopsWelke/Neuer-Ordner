@@ -25,7 +25,8 @@
     white-space: normal;
 }
 
-#bestand_table td {
+#bestand_table td,
+.editor_table td {
     padding-left: 1px;
     padding-right: 1px;
     border-right-width: 1px;
@@ -33,7 +34,8 @@
     line-height: 1;
 }
 
-#bestand_table thead th {
+#bestand_table thead th, 
+.editor_table th{
     position: sticky;
     position: -webkit-sticky;
     top: 0;

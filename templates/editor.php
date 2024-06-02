@@ -78,7 +78,7 @@
     <div id="bestand">
         <hr>
         <H3>Dokumente</H3>
-        <table>
+        <table class="editor_table">
             <tr>
                 <th>Titel</th>
                 <th>Dateiname</th>
@@ -101,7 +101,7 @@
 
         <hr>
         <H3>Ausgabe-Historie</H3>
-        <table>
+        <table class="editor_table">
             <tr>
                 <th>Ausgabe</th>
                 <th>Rückname</th>
