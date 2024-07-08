@@ -69,6 +69,7 @@
 
         <?php if ($b->isEditable()) { ?>
         <input type="submit" name="submit" id="submit" value="Speichern">
+        <input type="submit" name="save_copy" id="save_copy" value="Speichern und Kopieren">
     </form>
 <?php $b->echoDeleteTeil();
         }

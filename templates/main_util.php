@@ -409,6 +409,11 @@ class Bestandliste
         echo('<td><div class="bestand_fix_row">' . $this->translateLineBreak2HTML(htmlspecialchars($zeile['bemerkung'] ?? '')) . '</div></td>');
         echo('<td>' . htmlspecialchars($zeile['fluke_nr'] ?? '') . '</td>');
 
+        $params['copy'] = $zeile['id'];
+        $absoluteUrl = $this->urlGenerator->linkToRoute('bestand.editor.create', $params);
+        echo('<td><a href="' . $absoluteUrl . '"><svg width="20" height="20" viewBox="0 0 20 20">
+            <image x="0" y="0" width="20" height="20" preserveAspectRatio="xMinYMin meet" xlink:href="/apps/bestand/img/copy.svg"  class="app-icon"></image></svg></a></td>');
+
         echo("</tr>\n");
     }
 
@@ -444,6 +449,8 @@ class Bestandliste
 
             $header .= '<th><a href="' . $sort_url . '">' . htmlspecialchars($f[1]) . $symbol_up . '</a></th>';
         }
+
+        $header .= '<th></th>'; # Kopiespalte
 
         echo($header);
     }

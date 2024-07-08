@@ -63,7 +63,9 @@ class Bestand
 
         $this->uid = $user->getUID();
 
-        if (0 < $this->id)
+        if (array_key_exists('copy', $params) && is_numeric($params['copy'])) {
+            $this->load_copy($params['copy']);
+        } elseif (0 < $this->id)
             if (!$this->load())
                 $this->id = 0;
 
@@ -114,14 +116,13 @@ class Bestand
 
     /**
      * @return bool
-     * H
      */
     private function load(): bool
     {
         $back = false;
-        $sql = "SELECT 
-            b.id, 
-            b.kategorie, 
+        $sql = "SELECT
+            b.id,
+            b.kategorie,
             k.name as kategorie_name,
             b.inventar_nr,
             b.serien_nr,
@@ -135,15 +136,15 @@ class Bestand
             b.einsatzort,
             b.anschaffungswert,
             b.st_beleg_nr,
-            to_char(b.anschaffungsdatum, 'YYYY-MM-DD') as anschaffungsdatum, 
+            to_char(b.anschaffungsdatum, 'YYYY-MM-DD') as anschaffungsdatum,
             b.zubehoer,
             b.st_inventar_nr,
             b.stb_inventar_nr,
             b.konto,
-            to_char(b.ausgabedatum, 'YYYY-MM-DD') as ausgabedatum, 
-            to_char(b.ruecknahmedatum, 'YYYY-MM-DD') as ruecknahmedatum, 
-            to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1, 
-            to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2, 
+            to_char(b.ausgabedatum, 'YYYY-MM-DD') as ausgabedatum,
+            to_char(b.ruecknahmedatum, 'YYYY-MM-DD') as ruecknahmedatum,
+            to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1,
+            to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2,
             b.bemerkung,
             b.fluke_nr,
             p.write
@@ -192,6 +193,67 @@ class Bestand
         return $back;
     }
 
+    /**
+     * @return bool
+     */
+    private function load_copy($copy_id): bool
+    {
+        $back = false;
+        $sql = "SELECT
+            b.kategorie,
+            k.name as kategorie_name,
+            b.bezeichnung,
+            b.typenbezeichnung,
+            b.lieferant,
+            b.standort,
+            b.nutzer,
+            b.einsatzort,
+            b.anschaffungswert,
+            to_char(b.anschaffungsdatum, 'YYYY-MM-DD') as anschaffungsdatum,
+            b.zubehoer,
+            b.konto,
+            to_char(b.ausgabedatum, 'YYYY-MM-DD') as ausgabedatum,
+            to_char(b.ruecknahmedatum, 'YYYY-MM-DD') as ruecknahmedatum,
+            to_char(b.prueftermin1, 'YYYY-MM-DD') as prueftermin1,
+            to_char(b.prueftermin2, 'YYYY-MM-DD') as prueftermin2,
+            b.bemerkung,
+            p.write
+            FROM oc_bdb_bestand b inner join oc_bdb_kategorie k on (b.kategorie = k.id)
+                inner join oc_bdb_kategorie_perm p on (p.kategorie=k.id)
+            WHERE b.id=:id and (p.write or p.read) and p.uid =:uid;";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(':id', $copy_id);
+        $stmt->bindParam(':uid', $this->uid);
+        $stmt->execute();
+        if ($content = $stmt->fetch()) {
+            $this->id = 0;
+
+            $this->kategorie = $content['kategorie'];
+            $this->kategorie_name = $content['kategorie_name'];
+
+            $this->bezeichnung = $content['bezeichnung'];
+            $this->typenbezeichnung = $content['typenbezeichnung'];
+            $this->lieferant = $content['lieferant'];
+            $this->standort = $content['standort'];
+            $this->nutzer = $content['nutzer'];
+            $this->einsatzort = $content['einsatzort'];
+            $this->zubehoer = $content['zubehoer'];
+            $this->konto = $content['konto'];
+            $this->bemerkung = $content['bemerkung'];
+            $this->anschaffungswert = $content['anschaffungswert'];
+            $this->anschaffungsdatum = $content['anschaffungsdatum'];
+            $this->prueftermin1 = $content['prueftermin1'];
+            $this->prueftermin2 = $content['prueftermin2'];
+            $this->ausgabedatum = $content['ausgabedatum'];
+            $this->ruecknahmedatum = $content['ruecknahmedatum'];
+            $this->editable = $content['write'];
+
+            $back = true;
+        }
+        $stmt->closeCursor();
+
+        return $back;
+    }
 
     public function echoUpdateTeil()
     {
@@ -239,9 +301,9 @@ class Bestand
     public function selectKategorie()
     {
         echo('<select name="kategorie" id="kategorie" autofocus>');
-        $sql = 'SELECT k.id, k.name 
+        $sql = 'SELECT k.id, k.name
             FROM oc_bdb_kategorie k inner join oc_bdb_kategorie_perm p on (k.id=p.kategorie)
-            WHERE p.uid=:uid 
+            WHERE p.uid=:uid
             ORDER BY 2;';
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':uid', $this->uid);
@@ -473,10 +535,10 @@ class Bestand
 
     public function echoLeihHistorie()
     {
-        $sql = "SELECT to_char(ausgabedatum, 'DD.MM.YYYY') as ausgabedatum, 
-            to_char(ruecknahmedatum, 'DD.MM.YYYY') as ruecknahmedatum, 
-            nutzer, einsatzort 
-            FROM oc_bdb_bestand_leihhistorie WHERE bestand=:id 
+        $sql = "SELECT to_char(ausgabedatum, 'DD.MM.YYYY') as ausgabedatum,
+            to_char(ruecknahmedatum, 'DD.MM.YYYY') as ruecknahmedatum,
+            nutzer, einsatzort
+            FROM oc_bdb_bestand_leihhistorie WHERE bestand=:id
             ORDER BY ausgabedatum DESC, ruecknahmedatum DESC, nutzer, einsatzort;";
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(':id', $this->id);

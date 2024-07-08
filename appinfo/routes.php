@@ -12,6 +12,6 @@ return [
 
         ['name' => 'editor#add_doc', 'url' => '/add_doc_bestand', 'verb' => 'POST'],
         ['name' => 'editor#show_doc', 'url' => '/show_doc_bestand', 'verb' => 'GET'],
-        ['name' => 'editor#del_doc', 'url' => '/del_doc_bestand', 'verb' => 'GET']
+        ['name' => 'editor#del_doc', 'url' => '/del_doc_bestand', 'verb' => 'GET'],
     ],
 ];

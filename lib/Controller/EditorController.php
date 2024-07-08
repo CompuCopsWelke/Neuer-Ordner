@@ -114,7 +114,8 @@ class EditorController extends Controller
         $prueftermin2,
         $ausgabedatum,
         $ruecknahmedatum,
-        $letzte_kategorie
+        $letzte_kategorie,
+        $save_copy
     ): \OCP\AppFramework\Http\RedirectResponse {
         $dbh = $this->getDbh();
         $params = false;
@@ -214,6 +215,27 @@ class EditorController extends Controller
             $params['letzte_kategorie'] = $letzte_kategorie;
 
             return new RedirectResponse($urlGenerator->linkToRoute('bestand.editor.create', $params));
+        } elseif (0 < strlen($save_copy)) {
+            $params = [];
+            $params['kategorie'] = $kategorie;
+            $params['bezeichnung'] = $bezeichnung;
+            $params['typenbezeichnung'] = $typenbezeichnung;
+            $params['lieferant'] = $lieferant;
+            $params['standort'] = $standort;
+            $params['nutzer'] = $nutzer;
+            $params['einsatzort'] = $einsatzort;
+            $params['zubehoer'] = $zubehoer;
+            $params['konto'] = $konto;
+            $params['bemerkung'] = $bemerkung;
+            $params['anschaffungswert'] = $anschaffungswert;
+            $params['anschaffungsdatum'] = $anschaffungsdatum;
+            $params['prueftermin1'] = $prueftermin1;
+            $params['prueftermin2'] = $prueftermin2;
+            $params['ausgabedatum'] = $ausgabedatum;
+            $params['ruecknahmedatum'] = $ruecknahmedatum;
+            $params['letzte_kategorie'] = $letzte_kategorie;
+
+            return new RedirectResponse($urlGenerator->linkToRoute('bestand.editor.create', $params));
         }
 
         $params['kategorie'] = $letzte_kategorie;
@@ -272,36 +294,38 @@ class EditorController extends Controller
         $prueftermin2,
         $ausgabedatum,
         $ruecknahmedatum,
-        $letzte_kategorie
+        $letzte_kategorie,
+        $copy
     ): TemplateResponse {
         Util::addStyle(Application::APP_ID, 'bestand');
 
-        $params['error_msg'] = $error_msg;
-        $params['kategorie'] = $kategorie;
-        $params['inventar_nr'] = $inventar_nr;
-        $params['serien_nr'] = $serien_nr;
-        $params['weitere_nr'] = $weitere_nr;
-        $params['geheim_nr'] = $geheim_nr;
-        $params['bezeichnung'] = $bezeichnung;
-        $params['typenbezeichnung'] = $typenbezeichnung;
-        $params['lieferant'] = $lieferant;
-        $params['standort'] = $standort;
-        $params['nutzer'] = $nutzer;
-        $params['einsatzort'] = $einsatzort;
-        $params['st_beleg_nr'] = $st_beleg_nr;
-        $params['zubehoer'] = $zubehoer;
-        $params['st_inventar_nr'] = $st_inventar_nr;
-        $params['stb_inventar_nr'] = $stb_inventar_nr;
-        $params['konto'] = $konto;
-        $params['bemerkung'] = $bemerkung;
-        $params['fluke_nr'] = $fluke_nr;
-        $params['anschaffungswert'] = $anschaffungswert;
-        $params['anschaffungsdatum'] = $anschaffungsdatum;
-        $params['prueftermin1'] = $prueftermin1;
-        $params['prueftermin2'] = $prueftermin2;
-        $params['ausgabedatum'] = $ausgabedatum;
-        $params['ruecknahmedatum'] = $ruecknahmedatum;
-        $params['letzte_kategorie'] = $letzte_kategorie;
+        (0 < strlen($error_msg)) && $params['error_msg'] = $error_msg;
+        (0 < strlen($kategorie)) && $params['kategorie'] = $kategorie;
+        (0 < strlen($inventar_nr)) && $params['inventar_nr'] = $inventar_nr;
+        (0 < strlen($serien_nr)) && $params['serien_nr'] = $serien_nr;
+        (0 < strlen($weitere_nr)) && $params['weitere_nr'] = $weitere_nr;
+        (0 < strlen($geheim_nr)) && $params['geheim_nr'] = $geheim_nr;
+        (0 < strlen($bezeichnung)) && $params['bezeichnung'] = $bezeichnung;
+        (0 < strlen($typenbezeichnung)) && $params['typenbezeichnung'] = $typenbezeichnung;
+        (0 < strlen($lieferant)) && $params['lieferant'] = $lieferant;
+        (0 < strlen($standort)) && $params['standort'] = $standort;
+        (0 < strlen($nutzer)) && $params['nutzer'] = $nutzer;
+        (0 < strlen($einsatzort)) && $params['einsatzort'] = $einsatzort;
+        (0 < strlen($st_beleg_nr)) && $params['st_beleg_nr'] = $st_beleg_nr;
+        (0 < strlen($zubehoer)) && $params['zubehoer'] = $zubehoer;
+        (0 < strlen($st_inventar_nr)) && $params['st_inventar_nr'] = $st_inventar_nr;
+        (0 < strlen($stb_inventar_nr)) && $params['stb_inventar_nr'] = $stb_inventar_nr;
+        (0 < strlen($konto)) && $params['konto'] = $konto;
+        (0 < strlen($bemerkung)) && $params['bemerkung'] = $bemerkung;
+        (0 < strlen($fluke_nr)) && $params['fluke_nr'] = $fluke_nr;
+        (0 < strlen($anschaffungswert)) && $params['anschaffungswert'] = $anschaffungswert;
+        (0 < strlen($anschaffungsdatum)) && $params['anschaffungsdatum'] = $anschaffungsdatum;
+        (0 < strlen($prueftermin1)) && $params['prueftermin1'] = $prueftermin1;
+        (0 < strlen($prueftermin2)) && $params['prueftermin2'] = $prueftermin2;
+        (0 < strlen($ausgabedatum)) && $params['ausgabedatum'] = $ausgabedatum;
+        (0 < strlen($ruecknahmedatum)) && $params['ruecknahmedatum'] = $ruecknahmedatum;
+        (0 < strlen($letzte_kategorie)) && $params['letzte_kategorie'] = $letzte_kategorie;
+        (0 < strlen($copy)) && $params['copy'] = $copy;
         return new TemplateResponse(Application::APP_ID, 'editor', $params);
     }
 
