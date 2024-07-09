@@ -77,6 +77,7 @@ class Bestand
             $this->message = $params['message'] ?? '';
 
 
+        if (array_key_exists('kategorie', $params)) $this->kategorie = $params['kategorie'];
         if (array_key_exists('inventar_nr', $params)) $this->inventar_nr = $params['inventar_nr'];
         if (array_key_exists('serien_nr', $params)) $this->serien_nr = $params['serien_nr'];
         if (array_key_exists('weitere_nr', $params)) $this->weitere_nr = $params['weitere_nr'];
