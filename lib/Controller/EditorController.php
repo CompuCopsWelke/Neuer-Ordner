@@ -299,6 +299,7 @@ class EditorController extends Controller
     ): TemplateResponse {
         Util::addStyle(Application::APP_ID, 'bestand');
 
+        $params = [];
         (0 < strlen($error_msg)) && $params['error_msg'] = $error_msg;
         (0 < strlen($kategorie)) && $params['kategorie'] = $kategorie;
         (0 < strlen($inventar_nr)) && $params['inventar_nr'] = $inventar_nr;
